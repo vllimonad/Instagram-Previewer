@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2B162B012ADECF1300C29696 /* IconsHeaderCollectionReusableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B162B002ADECF1300C29696 /* IconsHeaderCollectionReusableView.swift */; };
+		2B162B032ADEEB1400C29696 /* InfoHeaderCollectionReusableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B162B022ADEEB1400C29696 /* InfoHeaderCollectionReusableView.swift */; };
 		2BD4453E2ADDAD350019ADEC /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2BD4453D2ADDAD350019ADEC /* AppDelegate.swift */; };
 		2BD445402ADDAD350019ADEC /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2BD4453F2ADDAD350019ADEC /* SceneDelegate.swift */; };
 		2BD445422ADDAD350019ADEC /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2BD445412ADDAD350019ADEC /* ViewController.swift */; };
@@ -14,9 +16,12 @@
 		2BD445472ADDAD360019ADEC /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2BD445462ADDAD360019ADEC /* Assets.xcassets */; };
 		2BD4454A2ADDAD360019ADEC /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2BD445482ADDAD360019ADEC /* LaunchScreen.storyboard */; };
 		2BD445522ADDAEF10019ADEC /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2BD445512ADDAEF10019ADEC /* MainViewController.swift */; };
+		2BD445562ADDD8CD0019ADEC /* PhotoViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2BD445552ADDD8CD0019ADEC /* PhotoViewCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		2B162B002ADECF1300C29696 /* IconsHeaderCollectionReusableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IconsHeaderCollectionReusableView.swift; sourceTree = "<group>"; };
+		2B162B022ADEEB1400C29696 /* InfoHeaderCollectionReusableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfoHeaderCollectionReusableView.swift; sourceTree = "<group>"; };
 		2BD4453A2ADDAD350019ADEC /* Instagram Previewer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Instagram Previewer.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2BD4453D2ADDAD350019ADEC /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		2BD4453F2ADDAD350019ADEC /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -26,6 +31,7 @@
 		2BD445492ADDAD360019ADEC /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		2BD4454B2ADDAD360019ADEC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		2BD445512ADDAEF10019ADEC /* MainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
+		2BD445552ADDD8CD0019ADEC /* PhotoViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoViewCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -61,6 +67,9 @@
 				2BD4453D2ADDAD350019ADEC /* AppDelegate.swift */,
 				2BD4453F2ADDAD350019ADEC /* SceneDelegate.swift */,
 				2BD445412ADDAD350019ADEC /* ViewController.swift */,
+				2B162B002ADECF1300C29696 /* IconsHeaderCollectionReusableView.swift */,
+				2B162B022ADEEB1400C29696 /* InfoHeaderCollectionReusableView.swift */,
+				2BD445552ADDD8CD0019ADEC /* PhotoViewCell.swift */,
 				2BD445512ADDAEF10019ADEC /* MainViewController.swift */,
 				2BD445432ADDAD350019ADEC /* Main.storyboard */,
 				2BD445462ADDAD360019ADEC /* Assets.xcassets */,
@@ -145,6 +154,9 @@
 				2BD4453E2ADDAD350019ADEC /* AppDelegate.swift in Sources */,
 				2BD445402ADDAD350019ADEC /* SceneDelegate.swift in Sources */,
 				2BD445522ADDAEF10019ADEC /* MainViewController.swift in Sources */,
+				2B162B032ADEEB1400C29696 /* InfoHeaderCollectionReusableView.swift in Sources */,
+				2B162B012ADECF1300C29696 /* IconsHeaderCollectionReusableView.swift in Sources */,
+				2BD445562ADDD8CD0019ADEC /* PhotoViewCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
