@@ -9,6 +9,8 @@ import UIKit
 
 class ViewController: UIViewController {
     
+    var colors: [UIColor] = [ .black, .blue, .brown, .cyan, .darkText, .white, .systemRed, .tertiarySystemFill, .green, .gray, .magenta, .purple, .orange, .yellow]
+    
     let accountSwitchBarButtonItem: UIBarButtonItem = {
         let button = UIButton(type: .system)
         button.setTitle("vllimonad", for: .normal)
@@ -33,31 +35,21 @@ class ViewController: UIViewController {
         return button
     }()
     
-    var userAvatarButton: UIButton = {
-        let button = UIButton(type: .system)
-        button.backgroundColor = .black
-        button.layer.cornerRadius = 45
-        button.translatesAutoresizingMaskIntoConstraints = false
-        return button
-    }()
-    
-    let stack: UIStackView = {
-        let stack = UIStackView()
-        stack.axis = .horizontal
-        stack.distribution = .equalSpacing
-        stack.translatesAutoresizingMaskIntoConstraints = false
-        return stack
+    let layout: UICollectionViewFlowLayout = {
+        let layout = UICollectionViewFlowLayout()
+        layout.scrollDirection = .vertical
+        layout.minimumInteritemSpacing = 0
+        layout.minimumLineSpacing = 0
+        layout.sectionHeadersPinToVisibleBounds = true
+        return layout
     }()
     
     var collectionView: UICollectionView!
-    var scrollView: UIScrollView!
-    var contentView: UIView!
 
     override func viewDidLoad() {
         super.viewDidLoad()
         addBarButtons()
         setupCollectionView()
-        setupLayout()
     }
     
     func addBarButtons() {
@@ -68,107 +60,86 @@ class ViewController: UIViewController {
     @objc func addImage() {}
     @objc func showAccounts() {}
 
-    func setupLayout() {
-        contentView = UIView()
-        contentView.translatesAutoresizingMaskIntoConstraints = false
-        
-        scrollView = UIScrollView()
-        scrollView.contentSize = CGSize(width: view.frame.size.width, height: (48+6)*view.frame.width/9)
-        scrollView.translatesAutoresizingMaskIntoConstraints = false
-        scrollView.addSubview(contentView)
-        view.addSubview(scrollView)
-        
-        
-        contentView.addSubview(userAvatarButton)
-        contentView.addSubview(stack)
-        stack.addArrangedSubview(getLabelsWith(name: "Posts", number: 1))
-        stack.addArrangedSubview(getLabelsWith(name: "Followers", number: 245))
-        stack.addArrangedSubview(getLabelsWith(name: "Folllowing", number: 643))
-        contentView.addSubview(collectionView)
-
-        NSLayoutConstraint.activate([
-            scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            scrollView.topAnchor.constraint(equalTo: view.topAnchor),
-            scrollView.widthAnchor.constraint(equalTo: view.widthAnchor),
-            scrollView.heightAnchor.constraint(equalTo: view.heightAnchor),
-            
-            contentView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor),
-            contentView.topAnchor.constraint(equalTo: scrollView.topAnchor),
-            contentView.widthAnchor.constraint(equalTo: scrollView.widthAnchor),
-            contentView.heightAnchor.constraint(equalTo: scrollView.heightAnchor),
-            
-            userAvatarButton.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 20),
-            userAvatarButton.topAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.topAnchor, constant: 15),
-            userAvatarButton.widthAnchor.constraint(equalToConstant: 90),
-            userAvatarButton.heightAnchor.constraint(equalToConstant: 90),
-
-            stack.leadingAnchor.constraint(equalTo: userAvatarButton.trailingAnchor, constant: 60),
-            stack.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -23),
-            stack.centerYAnchor.constraint(equalTo: userAvatarButton.centerYAnchor, constant: 5),
-            
-            collectionView.topAnchor.constraint(equalTo: userAvatarButton.bottomAnchor, constant: 200),
-            collectionView.heightAnchor.constraint(greaterThanOrEqualToConstant: 48*view.frame.width/9),
-            collectionView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
-            collectionView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor)
-        ])
-    }
     
-    func getLabelsWith(name: String, number: Int) -> UIStackView {
-        let nameLabel = UILabel()
-        nameLabel.text = name
-        nameLabel.font = UIFont.systemFont(ofSize: 14)
-        nameLabel.textColor = UIColor(named: "text")
-        
-        let numberLabel = UILabel()
-        numberLabel.text = String(number)
-        numberLabel.font = UIFont.boldSystemFont(ofSize: 16)
-        numberLabel.textColor = UIColor(named: "text")
-        
-        let stack = UIStackView()
-        stack.axis = .vertical
-        stack.alignment = .center
-        stack.addArrangedSubview(numberLabel)
-        stack.addArrangedSubview(nameLabel)
-        return stack
-    }
 }
 
 extension ViewController: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     
     func setupCollectionView() {
-        let layout = UICollectionViewFlowLayout()
-        layout.scrollDirection = .vertical
-        layout.minimumInteritemSpacing = 0
-        layout.minimumLineSpacing = 0
         layout.itemSize = CGSize(width: view.frame.width/3, height: view.frame.width/3)
-        layout.sectionHeadersPinToVisibleBounds = true
         collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.register(PhotoViewCell.self, forCellWithReuseIdentifier: PhotoViewCell.id)
         collectionView.register(IconsHeaderCollectionReusableView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: IconsHeaderCollectionReusableView.id)
+        collectionView.register(InfoHeaderCollectionReusableView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: InfoHeaderCollectionReusableView.id)
         collectionView.translatesAutoresizingMaskIntoConstraints = false
-        collectionView.isScrollEnabled = false
         collectionView.delegate = self
         collectionView.dataSource = self
+        collectionView.frame = view.bounds
+        view.addSubview(collectionView)
+        let gesture = UILongPressGestureRecognizer(target: self, action: #selector(handleLongPressGesture(_:)))
+        gesture.minimumPressDuration = 0.15
+        collectionView.addGestureRecognizer(gesture)
+    }
+    
+    @objc func handleLongPressGesture(_ gesture: UILongPressGestureRecognizer) {
+        guard let indexPath = collectionView.indexPathForItem(at: gesture.location(in: collectionView)) else { return }
+        switch gesture.state {
+        case .began:
+            collectionView.beginInteractiveMovementForItem(at: indexPath)
+        case .changed:
+            collectionView.updateInteractiveMovementTargetPosition(gesture.location(in: collectionView))
+        case .ended:
+            collectionView.endInteractiveMovement()
+        default:
+            collectionView.cancelInteractiveMovement()
+        }
+    }
+    
+    func numberOfSections(in collectionView: UICollectionView) -> Int {
+        return 2
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 48
+        if section == 0 {
+            return 0
+        }
+        return colors.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: PhotoViewCell.id, for: indexPath) as! PhotoViewCell
-        cell.backgroundColor = .blue
+        cell.backgroundColor = colors[indexPath.row]
         cell.layer.borderWidth = 1
         return cell
     }
     
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
-        let header = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: IconsHeaderCollectionReusableView.id, for: indexPath) as! IconsHeaderCollectionReusableView
-        header.configure()
-        return header
+        if indexPath.section == 0 {
+            let infoHeader = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: InfoHeaderCollectionReusableView.id, for: indexPath) as! InfoHeaderCollectionReusableView
+            return infoHeader
+        }
+        let iconsHeader = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: IconsHeaderCollectionReusableView.id, for: indexPath) as! IconsHeaderCollectionReusableView
+        iconsHeader.configure()
+        return iconsHeader
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
-        return CGSize(width: contentView.frame.width, height: contentView.frame.height/16)
+        if section == 0 {
+            return CGSize(width: view.frame.width, height: view.frame.height/3)
+        } else {
+            return CGSize(width: view.frame.width, height: view.frame.height/16)
+        }
     }
+    
+    func collectionView(_ collectionView: UICollectionView, canMoveItemAt indexPath: IndexPath) -> Bool {
+        return true
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, moveItemAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
+        let item = colors.remove(at: sourceIndexPath.row)
+        colors.insert(item, at: destinationIndexPath.row)
+    }
+    
+    
+    
 }
