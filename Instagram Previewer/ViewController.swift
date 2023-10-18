@@ -77,7 +77,7 @@ extension ViewController: UICollectionViewDelegate, UICollectionViewDataSource, 
         collectionView.frame = view.bounds
         view.addSubview(collectionView)
         let gesture = UILongPressGestureRecognizer(target: self, action: #selector(handleLongPressGesture(_:)))
-        gesture.minimumPressDuration = 0.15
+        gesture.minimumPressDuration = 0.2
         collectionView.addGestureRecognizer(gesture)
     }
     
