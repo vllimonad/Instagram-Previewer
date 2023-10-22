@@ -62,8 +62,6 @@ class LogInViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .systemBackground
-        //usernameField.frame = CGRect(x: 20, y: 300 , width: view.frame.width-40, height: 50)
-        //view.addSubview(usernameField)
         setupLayout()
     }
     

@@ -11,7 +11,7 @@ class PhotoViewCell: UICollectionViewCell {
     
     static let id = "PhotoCell"
     
-    let image = UIImageView()
+    var image = UIImageView()
 
     override init(frame: CGRect) {
         super.init(frame: frame)

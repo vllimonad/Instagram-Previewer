@@ -23,14 +23,14 @@ class ViewController: UIViewController {
     
     let addImageBarButtonItem: UIBarButtonItem = {
         let image = UIImage(systemName: "ellipsis.circle", withConfiguration: UIImage.SymbolConfiguration(pointSize: 20, weight: .medium))
-        let button = UIBarButtonItem(image: image, style: .plain, target: self, action: #selector(addImage))
+        var button = UIBarButtonItem(image: image, style: .plain, target: self, action: #selector(addImage))
         button.tintColor = UIColor(named: "text")
         return button
     }()
     
     let openSettingsBarButtonItem: UIBarButtonItem = {
         let image = UIImage(systemName: "plus.app", withConfiguration: UIImage.SymbolConfiguration(pointSize: 20, weight: .medium))
-        let button = UIBarButtonItem(image: image, style: .plain, target: self, action: #selector(openSettings))
+        var button = UIBarButtonItem(image: image, style: .plain, target: self, action: #selector(openSettings))
         button.tintColor = UIColor(named: "text")
         return button
     }()
@@ -45,9 +45,13 @@ class ViewController: UIViewController {
     }()
     
     var collectionView: UICollectionView!
+    var logInViewModel: LogInViewModel!
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        logInViewModel = LogInViewModel()
+        logInViewModel.delegate = self
+        logInViewModel.getUserData()
         addBarButtons()
         setupCollectionView()
     }
@@ -103,12 +107,13 @@ extension ViewController: UICollectionViewDelegate, UICollectionViewDataSource, 
         if section == 0 {
             return 0
         }
-        return colors.count
+        return logInViewModel.getNumberOfItems()
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: PhotoViewCell.id, for: indexPath) as! PhotoViewCell
-        cell.backgroundColor = colors[indexPath.row]
+        //cell.backgroundColor = colors[indexPath.row]
+        cell.image.image = logInViewModel.getItemAt(indexPath.row)
         cell.layer.borderWidth = 1
         return cell
     }
@@ -139,7 +144,10 @@ extension ViewController: UICollectionViewDelegate, UICollectionViewDataSource, 
         let item = colors.remove(at: sourceIndexPath.row)
         colors.insert(item, at: destinationIndexPath.row)
     }
-    
-    
-    
+}
+
+extension ViewController: LogInViewModelDelegate {
+    func reload() {
+        collectionView.reloadData()
+    }
 }
