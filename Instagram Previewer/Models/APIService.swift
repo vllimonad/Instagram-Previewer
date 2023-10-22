@@ -12,8 +12,9 @@ class APIService {
     var content: Content?
     var mediaData: [MediaData] = []
     var photos: [Data] = []
+    var userPicture: Data?
     
-    var access_token = "IGQWROemJZAMk55RzhqejlSU08zcU1BT0xqSmxLV3JyaE9COU1DZAUo2OFpfNUtiY01NSWVTYTR0TndWZA1VLWjZAVRHNPa1lPZAUpWMUZATZA2I1TkJjdktlemdlQ2t1bERyRExBTTJiM2hmVjg4dwZDZD"
+    var access_token = "IGQWROVUlLVlc5TTh3VkhzdzlwWDN5MThETzhySXhXZAVlwN3AwOWw5OEhlNXVYQXM4aElyakI0ZAlM1MElEVGx1U1UtMG50ZATdDZAHNIeThRQWM1eEY4OWtsWGIxckdNUnJNRGNpaXlYTnB3bm1hWmpNX3FBSUFoTUlRXzBPa2dxMUo5QQZDZD"
     
     func getContent() {
         let urlString = "https://graph.instagram.com/me/media?fields=id&access_token="
@@ -21,13 +22,9 @@ class APIService {
         let urlRequest = URLRequest(url: url!)
         let task = URLSession.shared.dataTask(with: urlRequest) { data,response,error in
             guard let data = data, let content = try? JSONDecoder().decode(Content.self, from: data) else { return }
-            //DispatchQueue.main.async {
-                self.content = content
-            //}
+            self.content = content
             for data in content.data {
-                //DispatchQueue.main.async {
-                    self.getMediaData(data.id)
-             //   }
+                self.getMediaData(data.id)
             }
         }
         task.resume()
@@ -39,10 +36,8 @@ class APIService {
         let url = URL(string: urlString + mediaID + urlFields + access_token)
         let urlRequest = URLRequest(url: url!)
         let task = URLSession.shared.dataTask(with: urlRequest) { data,response,error in
-            guard let data = data, let photo = try? JSONDecoder().decode(MediaData.self, from: data) else {
-                return }
-                self.mediaData.append(photo)
-                self.getPhoto(photo.media_url)
+            guard let data = data, let photo = try? JSONDecoder().decode(MediaData.self, from: data) else { return }
+            self.mediaData.append(photo)
             print(photo.media_url)
         }
         task.resume()
@@ -53,6 +48,19 @@ class APIService {
         let task = URLSession.shared.dataTask(with: urlRequest) { data,response,error in
             guard let data = data else { return }
             self.photos.append(data)
+        }
+        task.resume()
+    }
+    
+    func getUserPicture() {
+        let urlString = "https://graph.instagram.com/"
+        let userID = "6523499164443487"
+        let urlfield = "/picture"
+        let urlRequest = URLRequest(url: URL(string: urlString + userID + urlfield)!)
+        let task = URLSession.shared.dataTask(with: urlRequest) { data,response,error in
+            guard let data = data else { return }
+            self.userPicture = data
+            print(data)
         }
         task.resume()
     }
