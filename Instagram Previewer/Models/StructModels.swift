@@ -8,7 +8,7 @@
 import Foundation
 
 struct Content: Codable {
-    let data: [Media]
+    var data: [Media]
     let paging: Paging
     
     struct Paging: Codable {
@@ -22,18 +22,17 @@ struct Content: Codable {
 }
 
 struct Media: Codable {
-    let id: String
-}
-
-struct MediaData: Codable {
-    let id: String
-    let media_type: String
     let media_url: String
-    let username: String
     let timestamp: String
 }
 
 struct User: Codable {
     let access_token: String
     let user_id: Int
+}
+
+struct LongLivedToken: Codable {
+    let access_token: String
+    let token_type: String
+    let expires_in: Int
 }

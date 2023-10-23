@@ -11,36 +11,36 @@ import UIKit
 final class ViewModel {
     
     private var service: APIService!
+    private var saver: Saver!
     var delegate: LogInViewModelDelegate!
     
-    func getPermission() {
-        service = APIService()
-    }
-    
-    func getUserData() {
+    func getDataFromServer() {
         service = APIService()
         service.getContent()
-        //service.getUserPicture()
-        DispatchQueue.main.asyncAfter(deadline: .now()+1) {
-            let dateFormatter = DateFormatter()
-            dateFormatter.locale = Locale(identifier: "en_US_POSIX") // set locale to reliable US_POSIX
-            dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ssZ"
-            self.service.mediaData.sort(by: { dateFormatter.date(from:$0.timestamp)! > dateFormatter.date(from:$1.timestamp)!})
-            for data in self.service.mediaData {
-                self.service.getPhoto(data.media_url)
-            }
-            DispatchQueue.main.asyncAfter(deadline: .now()+1) {
-                self.delegate.reload()
-            }
+        DispatchQueue.main.asyncAfter(deadline: .now()+0.8) {
+            self.delegate.reload()
+        }
+    }
+    
+    func getDataFromFile() {
+        service = APIService()
+        saver = Saver()
+        service.photos = saver.readData()
+        if !FileManager().fileExists(atPath: Saver().getURL().absoluteString) || Saver().getURL().pathComponents.isEmpty {
+            print("ADADDADAD")
+        }
+        
+        DispatchQueue.main.asyncAfter(deadline: .now()+0.1) {
+            self.delegate.reload()
         }
     }
     
     func getNumberOfItems() -> Int {
-        return service.content == nil ? 0 : service.content!.data.count
+        return service.photos == nil ? 0 : service.photos!.count
     }
     
     func getItemAt(_ index: Int) -> UIImage {
-        return UIImage(data: service.photos[index])!
+        return UIImage(data: service.photos![index])!
     }
     
     func getUserPicture() -> UIImage {

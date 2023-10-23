@@ -10,6 +10,7 @@ import Foundation
 class LogInModel{
     
     var user: User!
+    var longLivedToken: LongLivedToken!
     
     func getAccessToken(for code: String) {
         let body = "client_id=348133480999841&client_secret=deae2d2af8d9e01e52226d4905c5b513&grant_type=authorization_code&redirect_uri=https://socialsizzle.herokuapp.com/auth/&code=" + code
@@ -19,7 +20,18 @@ class LogInModel{
         let task = URLSession.shared.dataTask(with: urlRequest) { data,response,error in
             guard let data = data, let user = try? JSONDecoder().decode(User.self, from: data) else { return }
             self.user = user
-            print(user.access_token)
+            self.getLongLivedAccessToken()
+        }
+        task.resume()
+    }
+    
+    func getLongLivedAccessToken() {
+        let urlString = "https://graph.instagram.com/access_token?grant_type=ig_exchange_token&client_secret=deae2d2af8d9e01e52226d4905c5b513&access_token=" + user.access_token
+        let urlRequest = URLRequest(url: URL(string: urlString)!)
+        let task = URLSession.shared.dataTask(with: urlRequest) { data,response,error in
+            guard let data = data, let token = try? JSONDecoder().decode(LongLivedToken.self, from: data) else { return }
+            self.longLivedToken = token
+            print(self.longLivedToken.access_token)
         }
         task.resume()
     }

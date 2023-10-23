@@ -50,8 +50,8 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         viewModel = ViewModel()
+        viewModel.getDataFromFile()
         viewModel.delegate = self
-        viewModel.getPermission()
         addBarButtons()
         setupCollectionView()
     }
