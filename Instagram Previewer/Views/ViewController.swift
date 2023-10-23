@@ -8,7 +8,7 @@
 import UIKit
 
 class ViewController: UIViewController {
-    
+
     var colors: [UIColor] = [ .black, .blue, .brown, .cyan, .darkText, .white, .systemRed, .tertiarySystemFill, .green, .gray, .magenta, .purple, .orange, .yellow]
     
     let accountSwitchBarButtonItem: UIBarButtonItem = {
@@ -22,14 +22,14 @@ class ViewController: UIViewController {
     }()
     
     let addImageBarButtonItem: UIBarButtonItem = {
-        let image = UIImage(systemName: "ellipsis.circle", withConfiguration: UIImage.SymbolConfiguration(pointSize: 20, weight: .medium))
+        let image = UIImage(systemName: "plus.app", withConfiguration: UIImage.SymbolConfiguration(pointSize: 20, weight: .medium))
         var button = UIBarButtonItem(image: image, style: .plain, target: self, action: #selector(addImage))
         button.tintColor = UIColor(named: "text")
         return button
     }()
     
     let openSettingsBarButtonItem: UIBarButtonItem = {
-        let image = UIImage(systemName: "plus.app", withConfiguration: UIImage.SymbolConfiguration(pointSize: 20, weight: .medium))
+        let image = UIImage(systemName: "ellipsis.circle", withConfiguration: UIImage.SymbolConfiguration(pointSize: 20, weight: .medium))
         var button = UIBarButtonItem(image: image, style: .plain, target: self, action: #selector(openSettings))
         button.tintColor = UIColor(named: "text")
         return button
@@ -45,19 +45,19 @@ class ViewController: UIViewController {
     }()
     
     var collectionView: UICollectionView!
-    var logInViewModel: LogInViewModel!
+    var viewModel: ViewModel!
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        logInViewModel = LogInViewModel()
-        logInViewModel.delegate = self
-        logInViewModel.getUserData()
+        viewModel = ViewModel()
+        viewModel.delegate = self
+        viewModel.getPermission()
         addBarButtons()
         setupCollectionView()
     }
     
     func addBarButtons() {
-        navigationItem.rightBarButtonItems = [addImageBarButtonItem, openSettingsBarButtonItem]
+        navigationItem.rightBarButtonItems = [openSettingsBarButtonItem, addImageBarButtonItem]
         navigationItem.leftBarButtonItem = accountSwitchBarButtonItem
     }
     @objc func openSettings() {}
@@ -107,13 +107,13 @@ extension ViewController: UICollectionViewDelegate, UICollectionViewDataSource, 
         if section == 0 {
             return 0
         }
-        return logInViewModel.getNumberOfItems()
+        return viewModel.getNumberOfItems()
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: PhotoViewCell.id, for: indexPath) as! PhotoViewCell
         //cell.backgroundColor = colors[indexPath.row]
-        cell.image.image = logInViewModel.getItemAt(indexPath.row)
+        cell.image.image = viewModel.getItemAt(indexPath.row)
         cell.layer.borderWidth = 1
         return cell
     }
