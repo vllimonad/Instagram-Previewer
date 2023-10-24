@@ -10,7 +10,8 @@ import Foundation
 final class LogInViewModel {
     
     var code: String!
-    var service: LogInModel!
+    var model: LogInModel!
+    var apiService: APIService!
     
     func getCodeFrom(_ url: String){
         var from = url.index(url.startIndex, offsetBy: "https://socialsizzle.herokuapp.com/auth/?code=".count)
@@ -21,8 +22,16 @@ final class LogInViewModel {
     }
     
     func getData(){
-        service = LogInModel()
-        service.getAccessToken(for: code)
+        model = LogInModel()
+        model.getAccessToken(for: code)
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1){
+            self.apiService = APIService()
+            self.apiService.access_token = self.model.user.access_token
+            self.apiService.getContent()
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1){
+                Saver().saveData(self.apiService.photos!)
+            }
+        }
     }
     
     

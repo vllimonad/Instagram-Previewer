@@ -14,25 +14,18 @@ final class ViewModel {
     private var saver: Saver!
     var delegate: LogInViewModelDelegate!
     
-    func getDataFromServer() {
+    /*func getDataFromServer() {
         service = APIService()
         service.getContent()
         DispatchQueue.main.asyncAfter(deadline: .now()+0.8) {
             self.delegate.reload()
         }
-    }
+    }*/
     
     func getDataFromFile() {
         service = APIService()
         saver = Saver()
         service.photos = saver.readData()
-        if !FileManager().fileExists(atPath: Saver().getURL().absoluteString) || Saver().getURL().pathComponents.isEmpty {
-            print("ADADDADAD")
-        }
-        
-        DispatchQueue.main.asyncAfter(deadline: .now()+0.1) {
-            self.delegate.reload()
-        }
     }
     
     func getNumberOfItems() -> Int {

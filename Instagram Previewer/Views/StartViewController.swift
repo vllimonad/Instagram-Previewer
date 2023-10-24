@@ -9,6 +9,9 @@ import UIKit
 
 class StartViewController: UIViewController {
     
+    var startViewModel: StartViewModel!
+    private var showPassword: Bool = false
+    
     private let usernameField: UITextField = {
         let textField = UITextField()
         textField.placeholder = "Phone number, username or email"
@@ -58,10 +61,10 @@ class StartViewController: UIViewController {
         return button
     }()
     
-    private var showPassword: Bool = false
-
     override func viewDidLoad() {
         super.viewDidLoad()
+        startViewModel = StartViewModel()
+        startViewModel.delegate = self
         view.backgroundColor = .systemBackground
         setupLayout()
     }
@@ -89,7 +92,7 @@ class StartViewController: UIViewController {
 
         ])
     }
-
+    
     @objc func hideShowPassword(_ button: UIButton) {
         showPassword.toggle()
         passwordField.isSecureTextEntry.toggle()
@@ -101,11 +104,22 @@ class StartViewController: UIViewController {
     }
     
     @objc func login() {
-        let vc = LogInViewController()
-        vc.closureConnection = {
+        if FileManager().fileExists(atPath: Saver().getURL().path()){
             let v = ViewController()
-            self.navigationController?.pushViewController(v, animated: true)
+            navigationController!.pushViewController(v, animated: true)
+        } else {
+            let vc = LogInViewController()
+            vc.closureConnection = {
+                let v = ViewController()
+                self.navigationController!.pushViewController(v, animated: true)
+            }
+            present(vc, animated: true)
         }
-        present(vc, animated: true)
+    }
+}
+
+extension StartViewController: StartViewModelDelegate {
+    func getNavigationController() -> UINavigationController {
+        return self.navigationController!
     }
 }

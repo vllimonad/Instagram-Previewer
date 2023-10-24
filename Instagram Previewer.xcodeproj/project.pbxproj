@@ -24,6 +24,7 @@
 		2BD445522ADDAEF10019ADEC /* LogInViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2BD445512ADDAEF10019ADEC /* LogInViewController.swift */; };
 		2BD445562ADDD8CD0019ADEC /* PhotoViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2BD445552ADDD8CD0019ADEC /* PhotoViewCell.swift */; };
 		2BD983FA2AE70E40000BE569 /* Saver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2BD983F92AE70E40000BE569 /* Saver.swift */; };
+		2BD983FC2AE7BA0C000BE569 /* StartViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2BD983FB2AE7BA0C000BE569 /* StartViewModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -46,6 +47,7 @@
 		2BD445512ADDAEF10019ADEC /* LogInViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogInViewController.swift; sourceTree = "<group>"; };
 		2BD445552ADDD8CD0019ADEC /* PhotoViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoViewCell.swift; sourceTree = "<group>"; };
 		2BD983F92AE70E40000BE569 /* Saver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Saver.swift; sourceTree = "<group>"; };
+		2BD983FB2AE7BA0C000BE569 /* StartViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StartViewModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -76,6 +78,7 @@
 			isa = PBXGroup;
 			children = (
 				2B32B0612AE3D7220093BDBD /* ViewModel.swift */,
+				2BD983FB2AE7BA0C000BE569 /* StartViewModel.swift */,
 				2B3D6AD62AE6AB9C00F0AF28 /* LogInViewModel.swift */,
 			);
 			path = ViewModels;
@@ -205,6 +208,7 @@
 				2B162B032ADEEB1400C29696 /* InfoHeaderCollectionReusableView.swift in Sources */,
 				2B32B0652AE472D30093BDBD /* APIService.swift in Sources */,
 				2B162B012ADECF1300C29696 /* IconsHeaderCollectionReusableView.swift in Sources */,
+				2BD983FC2AE7BA0C000BE569 /* StartViewModel.swift in Sources */,
 				2BD445562ADDD8CD0019ADEC /* PhotoViewCell.swift in Sources */,
 				2B32B0622AE3D7220093BDBD /* ViewModel.swift in Sources */,
 				2B32B0672AE4733A0093BDBD /* StructModels.swift in Sources */,

@@ -14,7 +14,7 @@ final class APIService {
     var userPicture: Data?
     
     let urlString = "https://graph.instagram.com/"
-    var access_token = "IGQWRNZAUFvQ0FCMk5xSmlBeDRPMW5ORFpPbGZA3dUxWLUstY1hRRDhGMlFMSC1kVmtPcHFudThyWmkyc0NsLXZAkX0ItS1hiUDUzbzVQcHEzNV9QSWNIYllaYUM4YlVrVnhPR0luTFVxMGxNQQZDZD"
+    var access_token = ""
     
     func getContent() {
         let dateFormatter = DateFormatter()

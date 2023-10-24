@@ -19,8 +19,10 @@ class LogInModel{
         urlRequest.httpBody = body.data(using: .utf8)
         let task = URLSession.shared.dataTask(with: urlRequest) { data,response,error in
             guard let data = data, let user = try? JSONDecoder().decode(User.self, from: data) else { return }
-            self.user = user
-            self.getLongLivedAccessToken()
+            DispatchQueue.main.async {
+                self.user = user
+                self.getLongLivedAccessToken()
+            }
         }
         task.resume()
     }
