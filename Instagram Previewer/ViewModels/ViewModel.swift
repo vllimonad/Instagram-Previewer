@@ -12,20 +12,18 @@ final class ViewModel {
     
     private var service: APIService!
     private var saver: Saver!
-    var delegate: LogInViewModelDelegate!
+    private var reader: Reader!
+    var delegate: ViewModelDelegate!
     
-    /*func getDataFromServer() {
-        service = APIService()
-        service.getContent()
-        DispatchQueue.main.asyncAfter(deadline: .now()+0.8) {
-            self.delegate.reload()
-        }
-    }*/
-    
-    func getDataFromFile() {
+    init() {
         service = APIService()
         saver = Saver()
-        service.photos = saver.readData()
+        reader = Reader()
+    }
+    
+    func getDataFromFile() {
+        service.photos = reader.readData()
+        delegate.reload()
     }
     
     func getNumberOfItems() -> Int {
@@ -41,8 +39,19 @@ final class ViewModel {
         return UIImage(data: picture)!
     }
     
+    func removeItemAt(_ index: Int) -> Data {
+        let item = service.photos?.remove(at: index)
+        saver.saveData(service.photos!)
+        return item!
+    }
+    
+    func insertItemAt(_ data: Data, _ index: Int) {
+        service.photos?.insert(data, at: index)
+        saver.saveData(service.photos!)
+    }
+    
 }
 
-protocol LogInViewModelDelegate {
+protocol ViewModelDelegate {
     func reload()
 }

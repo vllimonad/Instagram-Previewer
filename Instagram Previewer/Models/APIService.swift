@@ -10,7 +10,13 @@ import Foundation
 final class APIService {
     
     var content: Content?
-    var photos: [Data]?
+    var photos: [Data]? {
+        didSet {
+            if self.photos?.count == self.content?.data.count {
+                NotificationCenter.default.post(Notification(name: Notification.Name.dataWasObtained))
+            }
+        }
+    }
     var userPicture: Data?
     
     let urlString = "https://graph.instagram.com/"
@@ -55,5 +61,5 @@ final class APIService {
             self.userPicture = data
         }
         task.resume()
-    }    
+    }
 }

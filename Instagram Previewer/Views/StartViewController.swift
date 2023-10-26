@@ -104,14 +104,15 @@ class StartViewController: UIViewController {
     }
     
     @objc func login() {
-        if FileManager().fileExists(atPath: Saver().getURL().path()){
+        //print(Saver().getURL().path())
+        if FileManager().fileExists(atPath: File.getURL().path()){
             let v = ViewController()
             navigationController!.pushViewController(v, animated: true)
         } else {
             let vc = LogInViewController()
-            vc.closureConnection = {
+            vc.pushViewController = { [weak self] in
                 let v = ViewController()
-                self.navigationController!.pushViewController(v, animated: true)
+                self?.navigationController!.pushViewController(v, animated: true)
             }
             present(vc, animated: true)
         }

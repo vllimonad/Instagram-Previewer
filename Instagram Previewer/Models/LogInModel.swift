@@ -7,10 +7,14 @@
 
 import Foundation
 
-class LogInModel{
+final class LogInModel{
     
     var user: User!
-    var longLivedToken: LongLivedToken!
+    var longLivedToken: LongLivedToken! {
+        didSet {
+            NotificationCenter.default.post(Notification(name: Notification.Name.accessTokenWasObtained))
+        }
+    }
     
     func getAccessToken(for code: String) {
         let body = "client_id=348133480999841&client_secret=deae2d2af8d9e01e52226d4905c5b513&grant_type=authorization_code&redirect_uri=https://socialsizzle.herokuapp.com/auth/&code=" + code
@@ -37,4 +41,10 @@ class LogInModel{
         }
         task.resume()
     }
+}
+
+
+extension Notification.Name {
+    static let accessTokenWasObtained = Notification.Name("accessTokenWasObtained")
+    static let dataWasObtained = Notification.Name("dataWasObtained")
 }

@@ -9,31 +9,37 @@ import Foundation
 
 final class LogInViewModel {
     
-    var code: String!
+    var delegate: LogInViewModelDelegate!
     var model: LogInModel!
     var apiService: APIService!
+    var tokenObserver: NSObjectProtocol!
+    var dataObserver: NSObjectProtocol!
+    
+    init() {
+        model = LogInModel()
+        apiService = APIService()
+    }
     
     func getCodeFrom(_ url: String){
-        var from = url.index(url.startIndex, offsetBy: "https://socialsizzle.herokuapp.com/auth/?code=".count)
-        var to = url.lastIndex(of: "#")!
-        code = String(url[from..<to])
-        print(url[from..<to])
-        getData()
+        let from = url.index(url.startIndex, offsetBy: "https://socialsizzle.herokuapp.com/auth/?code=".count)
+        let to = url.lastIndex(of: "#")!
+        let code = String(url[from..<to])
+        getData(code)
     }
     
-    func getData(){
-        model = LogInModel()
-        model.getAccessToken(for: code)
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1){
-            self.apiService = APIService()
+    func getData(_ code: String){
+        tokenObserver = NotificationCenter.default.addObserver(forName: Notification.Name.accessTokenWasObtained, object: nil, queue: OperationQueue.main, using: { _ in
             self.apiService.access_token = self.model.user.access_token
             self.apiService.getContent()
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1){
-                Saver().saveData(self.apiService.photos!)
-            }
-        }
+        })
+        dataObserver = NotificationCenter.default.addObserver(forName: Notification.Name.dataWasObtained, object: nil, queue: OperationQueue.main, using: { _ in
+            Saver().saveData(self.apiService.photos!)
+            self.delegate.dismissViewController()
+        })
+        model.getAccessToken(for: code)
     }
-    
-    
-    
+}
+
+protocol LogInViewModelDelegate {
+    func dismissViewController()
 }

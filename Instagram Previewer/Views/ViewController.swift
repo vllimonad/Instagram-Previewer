@@ -9,7 +9,7 @@ import UIKit
 
 class ViewController: UIViewController {
 
-    var colors: [UIColor] = [ .black, .blue, .brown, .cyan, .darkText, .white, .systemRed, .tertiarySystemFill, .green, .gray, .magenta, .purple, .orange, .yellow]
+    //var colors: [UIColor] = [ .black, .blue, .brown, .cyan, .darkText, .white, .systemRed, .tertiarySystemFill, .green, .gray, .magenta, .purple, .orange, .yellow]
     
     let accountSwitchBarButtonItem: UIBarButtonItem = {
         let button = UIButton(type: .system)
@@ -49,11 +49,11 @@ class ViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        addBarButtons()
+        setupCollectionView()
         viewModel = ViewModel()
         viewModel.delegate = self
         viewModel.getDataFromFile()
-        addBarButtons()
-        setupCollectionView()
     }
     
     func addBarButtons() {
@@ -81,7 +81,7 @@ extension ViewController: UICollectionViewDelegate, UICollectionViewDataSource, 
         collectionView.frame = view.bounds
         view.addSubview(collectionView)
         let gesture = UILongPressGestureRecognizer(target: self, action: #selector(handleLongPressGesture(_:)))
-        gesture.minimumPressDuration = 0.2
+        gesture.minimumPressDuration = 0.5
         collectionView.addGestureRecognizer(gesture)
     }
     
@@ -112,7 +112,6 @@ extension ViewController: UICollectionViewDelegate, UICollectionViewDataSource, 
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: PhotoViewCell.id, for: indexPath) as! PhotoViewCell
-        //cell.backgroundColor = colors[indexPath.row]
         cell.image.image = viewModel.getItemAt(indexPath.row)
         cell.layer.borderWidth = 1
         return cell
@@ -142,12 +141,12 @@ extension ViewController: UICollectionViewDelegate, UICollectionViewDataSource, 
     }
     
     func collectionView(_ collectionView: UICollectionView, moveItemAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
-        let item = colors.remove(at: sourceIndexPath.row)
-        colors.insert(item, at: destinationIndexPath.row)
+        let item = viewModel.removeItemAt(sourceIndexPath.row)
+        viewModel.insertItemAt(item, destinationIndexPath.row)
     }
 }
 
-extension ViewController: LogInViewModelDelegate {
+extension ViewController: ViewModelDelegate {
     func reload() {
         collectionView.reloadData()
     }
