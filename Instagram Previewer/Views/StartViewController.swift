@@ -65,7 +65,6 @@ class StartViewController: UIViewController {
         super.viewDidLoad()
         startViewModel = StartViewModel()
         startViewModel.delegate = self
-        view.backgroundColor = .systemBackground
         setupLayout()
     }
     
