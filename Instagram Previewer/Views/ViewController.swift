@@ -29,6 +29,7 @@ class ViewController: UIViewController {
     }()
     
     var collectionView: UICollectionView!
+    var picker: UIImagePickerController!
     var viewModel: ViewModel!
 
     override func viewDidLoad() {
@@ -50,14 +51,20 @@ class ViewController: UIViewController {
         
         navigationItem.rightBarButtonItems = [openSettingsBarButtonItem, addImageBarButtonItem]
         navigationItem.leftBarButtonItem = accountSwitchBarButtonItem
+        
+        DispatchQueue.main.async {
+            self.picker = UIImagePickerController()
+            self.picker.delegate = self
+            self.picker.allowsEditing = true
+        }
     }
+    
     @objc func openSettings() {}
+    
     @objc func addImage() {
-        let picker = UIImagePickerController()
-        picker.delegate = self
-        picker.allowsEditing = true
         present(picker, animated: true)
     }
+    
     @objc func showAccounts() {}
 
     
@@ -76,23 +83,9 @@ extension ViewController: UICollectionViewDelegate, UICollectionViewDataSource, 
         collectionView.dataSource = self
         collectionView.frame = view.bounds
         view.addSubview(collectionView)
-        let gesture = UILongPressGestureRecognizer(target: self, action: #selector(handleLongPressGesture1(_:)))
-        gesture.minimumPressDuration = 0.4
-        collectionView.addGestureRecognizer(gesture)
-    }
-    
-    @objc func handleLongPressGesture1(_ gesture: UILongPressGestureRecognizer) {
-        guard let indexPath = collectionView.indexPathForItem(at: gesture.location(in: collectionView)) else { return }
-        switch gesture.state {
-        case .began:
-            collectionView.beginInteractiveMovementForItem(at: indexPath)
-        case .changed:
-            collectionView.updateInteractiveMovementTargetPosition(gesture.location(in: collectionView))
-        case .ended:
-            collectionView.endInteractiveMovement()
-        default:
-            collectionView.cancelInteractiveMovement()
-        }
+        collectionView.dragDelegate = self
+        collectionView.dropDelegate = self
+        collectionView.dragInteractionEnabled = true
     }
     
     func numberOfSections(in collectionView: UICollectionView) -> Int {
@@ -108,7 +101,7 @@ extension ViewController: UICollectionViewDelegate, UICollectionViewDataSource, 
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: PhotoViewCell.id, for: indexPath) as! PhotoViewCell
-        cell.image.image = viewModel.getItemAt(indexPath.row)
+        cell.image.image = viewModel.getItemAt(indexPath.item)
         cell.layer.borderWidth = 1
         return cell
     }
@@ -132,26 +125,24 @@ extension ViewController: UICollectionViewDelegate, UICollectionViewDataSource, 
         }
     }
     
-    func collectionView(_ collectionView: UICollectionView, canMoveItemAt indexPath: IndexPath) -> Bool {
-        return true
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, moveItemAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
-        let item = viewModel.removeItemAt(sourceIndexPath.row)
-        viewModel.insertItemAt(item, destinationIndexPath.row)
-    }
-    
     func collectionView(_ collectionView: UICollectionView, contextMenuConfigurationForItemsAt indexPaths: [IndexPath], point: CGPoint) -> UIContextMenuConfiguration? {
         let contextMenu = UIContextMenuConfiguration(actionProvider: { suggestedActions in
+            let indexPath = indexPaths.first!
+            let replaceAction = UIAction(title: "Replace", image: UIImage(systemName: "goforward.plus")) { action in
+                self.viewModel.removeItemAt(indexPath.item)
+                let newItem = self.viewModel.removeItemAt(0)
+                self.viewModel.insertItemAt(newItem, indexPath.item)
+            }
             let deleteAction = UIAction(title: "Delete", image: UIImage(systemName: "trash"), attributes: .destructive) { action in
-                let indexPath = indexPaths.first!
-                self.viewModel.removeItemAt(indexPath.row)
+                self.viewModel.removeItemAt(indexPath.item)
                 self.collectionView.deleteItems(at: [indexPaths.first!])
             }
-            return UIMenu(children: [deleteAction])
+            return UIMenu(children: [replaceAction, deleteAction])
         })
         return contextMenu
     }
+    
+    
 }
 
 extension ViewController: UIImagePickerControllerDelegate & UINavigationControllerDelegate {
@@ -160,6 +151,51 @@ extension ViewController: UIImagePickerControllerDelegate & UINavigationControll
         dismiss(animated: true)
         viewModel.insertItemAt(image.pngData()!, 0)
     }
+}
+
+extension ViewController: UICollectionViewDragDelegate, UICollectionViewDropDelegate {
+    
+    func collectionView(_ collectionView: UICollectionView, itemsForBeginning session: UIDragSession, at indexPath: IndexPath) -> [UIDragItem] {
+        let item = viewModel.getItemAt(indexPath.item)
+        let pr = NSItemProvider(object: item)
+        let dragItem = UIDragItem(itemProvider: pr)
+        return [dragItem]
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, performDropWith coordinator: UICollectionViewDropCoordinator) {
+        var destinationIndexPath: IndexPath
+        if let indexPath = coordinator.destinationIndexPath {
+            destinationIndexPath = indexPath
+        } else {
+            destinationIndexPath = IndexPath(item: 0, section: 1)
+        }
+        
+        if coordinator.proposal.operation == .move {
+            self.reorderItems(coordinator: coordinator, destinationIndexPath: destinationIndexPath, collectionView: collectionView)
+        }
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, dropSessionDidUpdate session: UIDropSession, withDestinationIndexPath destinationIndexPath: IndexPath?) -> UICollectionViewDropProposal {
+        if collectionView.hasActiveDrag {
+            return UICollectionViewDropProposal(operation: .move, intent: .insertAtDestinationIndexPath)
+        }
+        return UICollectionViewDropProposal(operation: .forbidden)
+    }
+    
+    func reorderItems(coordinator: UICollectionViewDropCoordinator, destinationIndexPath: IndexPath, collectionView: UICollectionView) {
+        if let item = coordinator.items.first, let sourceIndexPath = item.sourceIndexPath {
+            collectionView.performBatchUpdates {
+                let item = viewModel.removeItemAt(sourceIndexPath.item)
+                viewModel.insertItemAt(item, destinationIndexPath.item)
+                
+                collectionView.deleteItems(at: [sourceIndexPath])
+                collectionView.insertItems(at: [destinationIndexPath])
+            }
+            coordinator.drop(item.dragItem, toItemAt: destinationIndexPath)
+        }
+    }
+    
+    
 }
 
 extension ViewController: ViewModelDelegate {
