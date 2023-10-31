@@ -8,8 +8,6 @@
 import UIKit
 
 class ViewController: UIViewController {
-
-    //var colors: [UIColor] = [ .black, .blue, .brown, .cyan, .darkText, .white, .systemRed, .tertiarySystemFill, .green, .gray, .magenta, .purple, .orange, .yellow]
     
     let accountSwitchBarButtonItem: UIBarButtonItem = {
         let button = UIButton(type: .system)
@@ -19,20 +17,6 @@ class ViewController: UIViewController {
         button.tintColor = UIColor(named: "text")
         button.semanticContentAttribute = .forceRightToLeft
         return UIBarButtonItem(customView: button)
-    }()
-    
-    let addImageBarButtonItem: UIBarButtonItem = {
-        let image = UIImage(systemName: "plus.app", withConfiguration: UIImage.SymbolConfiguration(pointSize: 20, weight: .medium))
-        var button = UIBarButtonItem(image: image, style: .plain, target: self, action: #selector(addImage))
-        button.tintColor = UIColor(named: "text")
-        return button
-    }()
-    
-    let openSettingsBarButtonItem: UIBarButtonItem = {
-        let image = UIImage(systemName: "ellipsis.circle", withConfiguration: UIImage.SymbolConfiguration(pointSize: 20, weight: .medium))
-        var button = UIBarButtonItem(image: image, style: .plain, target: self, action: #selector(openSettings))
-        button.tintColor = UIColor(named: "text")
-        return button
     }()
     
     let layout: UICollectionViewFlowLayout = {
@@ -57,11 +41,23 @@ class ViewController: UIViewController {
     }
     
     func addBarButtons() {
+        let plusImage = UIImage(systemName: "plus.app", withConfiguration: UIImage.SymbolConfiguration(pointSize: 20, weight: .medium))
+        let settingsImage = UIImage(systemName: "ellipsis.circle", withConfiguration: UIImage.SymbolConfiguration(pointSize: 20, weight: .medium))
+        let addImageBarButtonItem = UIBarButtonItem(image: plusImage, style: .plain, target: self, action: #selector(addImage))
+        addImageBarButtonItem.tintColor = UIColor(named: "text")
+        let openSettingsBarButtonItem = UIBarButtonItem(image: settingsImage, style: .plain, target: self, action: #selector(openSettings))
+        openSettingsBarButtonItem.tintColor = UIColor(named: "text")
+        
         navigationItem.rightBarButtonItems = [openSettingsBarButtonItem, addImageBarButtonItem]
         navigationItem.leftBarButtonItem = accountSwitchBarButtonItem
     }
     @objc func openSettings() {}
-    @objc func addImage() {}
+    @objc func addImage() {
+        let picker = UIImagePickerController()
+        picker.delegate = self
+        picker.allowsEditing = true
+        present(picker, animated: true)
+    }
     @objc func showAccounts() {}
 
     
@@ -80,12 +76,12 @@ extension ViewController: UICollectionViewDelegate, UICollectionViewDataSource, 
         collectionView.dataSource = self
         collectionView.frame = view.bounds
         view.addSubview(collectionView)
-        let gesture = UILongPressGestureRecognizer(target: self, action: #selector(handleLongPressGesture(_:)))
-        gesture.minimumPressDuration = 0.5
+        let gesture = UILongPressGestureRecognizer(target: self, action: #selector(handleLongPressGesture1(_:)))
+        gesture.minimumPressDuration = 0.4
         collectionView.addGestureRecognizer(gesture)
     }
     
-    @objc func handleLongPressGesture(_ gesture: UILongPressGestureRecognizer) {
+    @objc func handleLongPressGesture1(_ gesture: UILongPressGestureRecognizer) {
         guard let indexPath = collectionView.indexPathForItem(at: gesture.location(in: collectionView)) else { return }
         switch gesture.state {
         case .began:
@@ -144,10 +140,30 @@ extension ViewController: UICollectionViewDelegate, UICollectionViewDataSource, 
         let item = viewModel.removeItemAt(sourceIndexPath.row)
         viewModel.insertItemAt(item, destinationIndexPath.row)
     }
+    
+    func collectionView(_ collectionView: UICollectionView, contextMenuConfigurationForItemsAt indexPaths: [IndexPath], point: CGPoint) -> UIContextMenuConfiguration? {
+        let contextMenu = UIContextMenuConfiguration(actionProvider: { suggestedActions in
+            let deleteAction = UIAction(title: "Delete", image: UIImage(systemName: "trash"), attributes: .destructive) { action in
+                let indexPath = indexPaths.first!
+                self.viewModel.removeItemAt(indexPath.row)
+                self.collectionView.deleteItems(at: [indexPaths.first!])
+            }
+            return UIMenu(children: [deleteAction])
+        })
+        return contextMenu
+    }
+}
+
+extension ViewController: UIImagePickerControllerDelegate & UINavigationControllerDelegate {
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        guard let image = info[.editedImage] as? UIImage else { return }
+        dismiss(animated: true)
+        viewModel.insertItemAt(image.pngData()!, 0)
+    }
 }
 
 extension ViewController: ViewModelDelegate {
-    func reload() {
+    func reloadCollectionView() {
         collectionView.reloadData()
     }
 }

@@ -23,7 +23,7 @@ final class ViewModel {
     
     func getDataFromFile() {
         service.photos = reader.readData()
-        delegate.reload()
+        delegate.reloadCollectionView()
     }
     
     func getNumberOfItems() -> Int {
@@ -48,10 +48,11 @@ final class ViewModel {
     func insertItemAt(_ data: Data, _ index: Int) {
         service.photos?.insert(data, at: index)
         saver.saveData(service.photos!)
+        delegate.reloadCollectionView()
     }
     
 }
 
 protocol ViewModelDelegate {
-    func reload()
+    func reloadCollectionView()
 }
