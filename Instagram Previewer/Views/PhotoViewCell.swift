@@ -11,12 +11,12 @@ class PhotoViewCell: UICollectionViewCell {
     
     static let id = "PhotoCell"
     
-    var image = UIImageView()
+    var imageView = UIImageView()
 
     override init(frame: CGRect) {
         super.init(frame: frame)
-        image.frame = contentView.bounds
-        addSubview(image)
+        imageView.frame = contentView.bounds
+        addSubview(imageView)
     }
     
     required init?(coder: NSCoder) {

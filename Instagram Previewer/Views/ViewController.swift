@@ -101,7 +101,7 @@ extension ViewController: UICollectionViewDelegate, UICollectionViewDataSource, 
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: PhotoViewCell.id, for: indexPath) as! PhotoViewCell
-        cell.image.image = viewModel.getItemAt(indexPath.item)
+        cell.imageView.image = viewModel.getItemAt(indexPath.item)
         cell.layer.borderWidth = 1
         return cell
     }
@@ -126,23 +126,46 @@ extension ViewController: UICollectionViewDelegate, UICollectionViewDataSource, 
     }
     
     func collectionView(_ collectionView: UICollectionView, contextMenuConfigurationForItemsAt indexPaths: [IndexPath], point: CGPoint) -> UIContextMenuConfiguration? {
-        let contextMenu = UIContextMenuConfiguration(actionProvider: { suggestedActions in
-            let indexPath = indexPaths.first!
-            let replaceAction = UIAction(title: "Replace", image: UIImage(systemName: "goforward.plus")) { action in
-                self.viewModel.removeItemAt(indexPath.item)
-                let newItem = self.viewModel.removeItemAt(0)
-                self.viewModel.insertItemAt(newItem, indexPath.item)
+        let indexPath = indexPaths.first!
+        let contextMenu = UIContextMenuConfiguration(
+            identifier: String(indexPath.item) as NSString,
+            previewProvider: { self.getPreviewProvider(indexPath) },
+            actionProvider: { _ in
+                let deleteAction = UIAction(title: "Delete", image: UIImage(systemName: "trash"), attributes: .destructive) { action in
+                    self.viewModel.removeItemAt(indexPath.item)
+                    self.collectionView.deleteItems(at: [indexPaths.first!])
             }
-            let deleteAction = UIAction(title: "Delete", image: UIImage(systemName: "trash"), attributes: .destructive) { action in
-                self.viewModel.removeItemAt(indexPath.item)
-                self.collectionView.deleteItems(at: [indexPaths.first!])
-            }
-            return UIMenu(children: [replaceAction, deleteAction])
+            return UIMenu(children: [deleteAction])
         })
         return contextMenu
     }
     
+    fileprivate func getPreviewProvider(_ indexPath: IndexPath) -> UIViewController {
+        let viewController = UIViewController()
+        let imageView = UIImageView(image: self.viewModel.getItemAt(indexPath.item))
+        viewController.view = imageView
+        viewController.preferredContentSize = CGSize(width: self.view.frame.width/1.3, height: self.view.frame.width/1.3)
+        return viewController
+    }
     
+    /*func collectionView(_ collectionView: UICollectionView, contextMenuConfiguration configuration: UIContextMenuConfiguration, highlightPreviewForItemAt indexPath: IndexPath) -> UITargetedPreview? {
+        guard let identifier = configuration.identifier as? String,
+              let index = Int(identifier),
+              let item = collectionView.cellForItem(at: IndexPath(item: index, section: 1)) as? PhotoViewCell
+        else { return nil }
+        return UITargetedPreview(view: item)
+    }
+        
+    func collectionView(_ collectionView: UICollectionView, contextMenuConfiguration configuration: UIContextMenuConfiguration, dismissalPreviewForItemAt indexPath: IndexPath) -> UITargetedPreview? {
+        guard let identifier = configuration.identifier as? String,
+              let index = Int(identifier),
+              let item = collectionView.cellForItem(at: IndexPath(item: index, section: 1)) as? PhotoViewCell
+        else { return nil }
+        UIView.animate(withDuration: 0, animations: {
+            item.transform = CGAffineTransform.identity
+        })
+        return UITargetedPreview(view: item)
+    }*/
 }
 
 extension ViewController: UIImagePickerControllerDelegate & UINavigationControllerDelegate {
@@ -157,8 +180,8 @@ extension ViewController: UICollectionViewDragDelegate, UICollectionViewDropDele
     
     func collectionView(_ collectionView: UICollectionView, itemsForBeginning session: UIDragSession, at indexPath: IndexPath) -> [UIDragItem] {
         let item = viewModel.getItemAt(indexPath.item)
-        let pr = NSItemProvider(object: item)
-        let dragItem = UIDragItem(itemProvider: pr)
+        let itemProvider = NSItemProvider(object: item)
+        let dragItem = UIDragItem(itemProvider: itemProvider)
         return [dragItem]
     }
     
@@ -169,7 +192,6 @@ extension ViewController: UICollectionViewDragDelegate, UICollectionViewDropDele
         } else {
             destinationIndexPath = IndexPath(item: 0, section: 1)
         }
-        
         if coordinator.proposal.operation == .move {
             self.reorderItems(coordinator: coordinator, destinationIndexPath: destinationIndexPath, collectionView: collectionView)
         }
