@@ -45,13 +45,11 @@ class ViewController: UIViewController {
         let plusImage = UIImage(systemName: "plus.app", withConfiguration: UIImage.SymbolConfiguration(pointSize: 20, weight: .medium))
         let settingsImage = UIImage(systemName: "ellipsis.circle", withConfiguration: UIImage.SymbolConfiguration(pointSize: 20, weight: .medium))
         let addImageBarButtonItem = UIBarButtonItem(image: plusImage, style: .plain, target: self, action: #selector(addImage))
-        addImageBarButtonItem.tintColor = UIColor(named: "text")
         let openSettingsBarButtonItem = UIBarButtonItem(image: settingsImage, style: .plain, target: self, action: #selector(openSettings))
+        addImageBarButtonItem.tintColor = UIColor(named: "text")
         openSettingsBarButtonItem.tintColor = UIColor(named: "text")
-        
         navigationItem.rightBarButtonItems = [openSettingsBarButtonItem, addImageBarButtonItem]
         navigationItem.leftBarButtonItem = accountSwitchBarButtonItem
-        
         DispatchQueue.main.async {
             self.picker = UIImagePickerController()
             self.picker.delegate = self
@@ -59,7 +57,9 @@ class ViewController: UIViewController {
         }
     }
     
-    @objc func openSettings() {}
+    @objc func openSettings() {
+        viewModel.getDataFromServer()
+    }
     
     @objc func addImage() {
         present(picker, animated: true)
@@ -109,7 +109,7 @@ extension ViewController: UICollectionViewDelegate, UICollectionViewDataSource, 
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
         if indexPath.section == 0 {
             let infoHeader = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: InfoHeaderCollectionReusableView.id, for: indexPath) as! InfoHeaderCollectionReusableView
-            //infoHeader.userAvatarButton.setImage(logInViewModel.getUserPicture(), for: .normal)
+            //infoHeader.userAvatarButton.setImage(viewModel.getUserPicture(), for: .normal)
             return infoHeader
         }
         let iconsHeader = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: IconsHeaderCollectionReusableView.id, for: indexPath) as! IconsHeaderCollectionReusableView
@@ -147,28 +147,10 @@ extension ViewController: UICollectionViewDelegate, UICollectionViewDataSource, 
         viewController.preferredContentSize = CGSize(width: self.view.frame.width/1.3, height: self.view.frame.width/1.3)
         return viewController
     }
-    
-    /*func collectionView(_ collectionView: UICollectionView, contextMenuConfiguration configuration: UIContextMenuConfiguration, highlightPreviewForItemAt indexPath: IndexPath) -> UITargetedPreview? {
-        guard let identifier = configuration.identifier as? String,
-              let index = Int(identifier),
-              let item = collectionView.cellForItem(at: IndexPath(item: index, section: 1)) as? PhotoViewCell
-        else { return nil }
-        return UITargetedPreview(view: item)
-    }
-        
-    func collectionView(_ collectionView: UICollectionView, contextMenuConfiguration configuration: UIContextMenuConfiguration, dismissalPreviewForItemAt indexPath: IndexPath) -> UITargetedPreview? {
-        guard let identifier = configuration.identifier as? String,
-              let index = Int(identifier),
-              let item = collectionView.cellForItem(at: IndexPath(item: index, section: 1)) as? PhotoViewCell
-        else { return nil }
-        UIView.animate(withDuration: 0, animations: {
-            item.transform = CGAffineTransform.identity
-        })
-        return UITargetedPreview(view: item)
-    }*/
 }
 
 extension ViewController: UIImagePickerControllerDelegate & UINavigationControllerDelegate {
+    
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         guard let image = info[.editedImage] as? UIImage else { return }
         dismiss(animated: true)

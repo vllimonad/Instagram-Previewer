@@ -31,7 +31,7 @@ final class LogInViewModel {
         tokenObserver = NotificationCenter.default.addObserver(forName: Notification.Name.accessTokenWasObtained, object: nil, queue: OperationQueue.main, using: { _ in
             self.apiService.access_token = self.model.user.access_token
             self.apiService.getContent()
-            //try? KeychainManager.saveToken(token: self.apiService.access_token.data(using: .utf8)!, account: String(self.model.user.user_id))
+            try? KeychainManager.saveToken(token: self.apiService.access_token.data(using: .utf8)!, account: "1")
         })
         dataObserver = NotificationCenter.default.addObserver(forName: Notification.Name.dataWasObtained, object: nil, queue: OperationQueue.main, using: { _ in
             Saver().saveData(self.apiService.photos!)

@@ -14,6 +14,7 @@ final class ViewModel {
     private var saver: Saver!
     private var reader: Reader!
     var delegate: ViewModelDelegate!
+    var dataObserver: NSObjectProtocol!
     
     init() {
         service = APIService()
@@ -24,6 +25,16 @@ final class ViewModel {
     func getDataFromFile() {
         service.photos = reader.readData()
         delegate.reloadCollectionView()
+    }
+    
+    func getDataFromServer() {
+        let token = try? KeychainManager.getToken(account: "1")
+        service.access_token = String(data: token!, encoding: .utf8)!
+        service.getContent()
+        dataObserver = NotificationCenter.default.addObserver(forName: Notification.Name.dataWasObtained, object: nil, queue: OperationQueue.main, using: { _ in
+            Saver().saveData(self.service.photos!)
+            self.delegate.reloadCollectionView()
+        })
     }
     
     func getNumberOfItems() -> Int {

@@ -66,6 +66,7 @@ class StartViewController: UIViewController {
         startViewModel = StartViewModel()
         startViewModel.delegate = self
         setupLayout()
+        login()
     }
     
     func setupLayout() {
