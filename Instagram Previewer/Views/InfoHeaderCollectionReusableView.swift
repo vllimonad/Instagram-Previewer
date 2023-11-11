@@ -13,7 +13,6 @@ class InfoHeaderCollectionReusableView: UICollectionReusableView {
     
     var userAvatarButton: UIButton = {
         let button = UIButton(type: .system)
-        button.backgroundColor = .black
         button.layer.cornerRadius = 45
         button.translatesAutoresizingMaskIntoConstraints = false
         return button

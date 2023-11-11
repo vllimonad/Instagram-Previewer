@@ -104,7 +104,6 @@ class StartViewController: UIViewController {
     }
     
     @objc func login() {
-        //print(Saver().getURL().path())
         if FileManager().fileExists(atPath: File.getURL().path()){
             let v = ViewController()
             navigationController!.pushViewController(v, animated: true)

@@ -18,7 +18,6 @@ final class APIService {
         }
     }
     var userPicture: Data?
-    
     let urlString = "https://graph.instagram.com/"
     var access_token = ""
     
@@ -30,11 +29,15 @@ final class APIService {
         let task = URLSession.shared.dataTask(with: urlRequest) { data,response,error in
             guard let data = data else { return }
             DispatchQueue.main.async {
-                self.content = try? JSONDecoder().decode(Content.self, from: data)
-                self.content?.data.sort(by: { dateFormatter.date(from:$0.timestamp)! > dateFormatter.date(from:$1.timestamp)!})
-                self.photos = []
-                for data in self.content!.data {
-                    self.getPhoto(data.media_url)
+                do {
+                    self.content = try JSONDecoder().decode(Content.self, from: data)
+                    self.content?.data.sort(by: { dateFormatter.date(from:$0.timestamp)! > dateFormatter.date(from:$1.timestamp)!})
+                    self.photos = []
+                    for media in self.content!.data {
+                        self.getPhoto(media.media_url)
+                    }
+                } catch {
+                    print(error)
                 }
             }
         }
@@ -54,11 +57,14 @@ final class APIService {
     
     func getUserPicture() {
         let userID = "6523499164443487"
-        let urlfield = "/picture/"
-        let urlRequest = URLRequest(url: URL(string: urlString + userID + urlfield)!)
+        let req = "https://graph.instagram.com/me?fields=id,username,profile_pic&access_token="
+        //let urlRequest = URLRequest(url: URL(string: urlString + userID + urlfield)!)
+        let urlRequest = URLRequest(url: URL(string: req + access_token)!)
         let task = URLSession.shared.dataTask(with: urlRequest) { data,response,error in
-            guard let data = data else { return }
+            guard let data = data, let user = try? JSONDecoder().decode(User.self, from: data) else { return }
             self.userPicture = data
+            print(user.user_id)
+            //print(user.profile_pic)
         }
         task.resume()
     }

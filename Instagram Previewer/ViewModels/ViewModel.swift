@@ -28,9 +28,10 @@ final class ViewModel {
     }
     
     func getDataFromServer() {
-        let token = try? KeychainManager.getToken(account: "1")
-        service.access_token = String(data: token!, encoding: .utf8)!
+        let tokenData = try? KeychainManager.getToken(account: "app")
+        service.access_token = String(data: tokenData!, encoding: .utf8)!
         service.getContent()
+        //service.getUserPicture()
         dataObserver = NotificationCenter.default.addObserver(forName: Notification.Name.dataWasObtained, object: nil, queue: OperationQueue.main, using: { _ in
             Saver().saveData(self.service.photos!)
             self.delegate.reloadCollectionView()

@@ -11,11 +11,11 @@ class ViewController: UIViewController {
     
     let accountSwitchBarButtonItem: UIBarButtonItem = {
         let button = UIButton(type: .system)
-        button.setTitle("vllimonad", for: .normal)
+        button.setTitle("sw1.app", for: .normal)
         button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 26)
-        button.setImage(UIImage(systemName: "chevron.down", withConfiguration: UIImage.SymbolConfiguration(pointSize: 10, weight: .medium)), for: .normal)
+        //button.setImage(UIImage(systemName: "chevron.down", withConfiguration: UIImage.SymbolConfiguration(pointSize: 10, weight: .medium)), for: .normal)
         button.tintColor = UIColor(named: "text")
-        button.semanticContentAttribute = .forceRightToLeft
+        //button.semanticContentAttribute = .forceRightToLeft
         return UIBarButtonItem(customView: button)
     }()
     
@@ -109,7 +109,7 @@ extension ViewController: UICollectionViewDelegate, UICollectionViewDataSource, 
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
         if indexPath.section == 0 {
             let infoHeader = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: InfoHeaderCollectionReusableView.id, for: indexPath) as! InfoHeaderCollectionReusableView
-            //infoHeader.userAvatarButton.setImage(viewModel.getUserPicture(), for: .normal)
+            infoHeader.userAvatarButton.setImage(viewModel.getUserPicture(), for: .normal)
             return infoHeader
         }
         let iconsHeader = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: IconsHeaderCollectionReusableView.id, for: indexPath) as! IconsHeaderCollectionReusableView
@@ -126,7 +126,7 @@ extension ViewController: UICollectionViewDelegate, UICollectionViewDataSource, 
     }
     
     func collectionView(_ collectionView: UICollectionView, contextMenuConfigurationForItemsAt indexPaths: [IndexPath], point: CGPoint) -> UIContextMenuConfiguration? {
-        let indexPath = indexPaths.first!
+        guard let indexPath = indexPaths.first else { return nil }
         let contextMenu = UIContextMenuConfiguration(
             identifier: String(indexPath.item) as NSString,
             previewProvider: { self.getPreviewProvider(indexPath) },

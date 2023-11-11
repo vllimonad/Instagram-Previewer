@@ -36,8 +36,12 @@ final class LogInModel{
         let urlRequest = URLRequest(url: URL(string: urlString)!)
         let task = URLSession.shared.dataTask(with: urlRequest) { data,response,error in
             guard let data = data, let token = try? JSONDecoder().decode(LongLivedToken.self, from: data) else { return }
-            self.longLivedToken = token
-            print(self.longLivedToken.access_token)
+            DispatchQueue.main.async {
+                self.longLivedToken = token
+                print("TOKEN: \(self.longLivedToken.access_token)")
+                //print("RESPONSE: \(response)")
+                //print("ERROR: \(error)")
+            }
         }
         task.resume()
     }
