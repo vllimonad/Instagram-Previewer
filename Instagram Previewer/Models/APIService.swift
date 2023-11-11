@@ -10,6 +10,9 @@ import Foundation
 final class APIService {
     
     let instagramURL = "https://graph.instagram.com/"
+    var userInfo: Info!
+    var userPicture: Data?
+    var access_token: String!
     var content: Content?
     var photos: [Data]? {
         didSet {
@@ -18,9 +21,6 @@ final class APIService {
             }
         }
     }
-    var username: String!
-    var userPicture: Data?
-    var access_token: String!
     
     func getContent() {
         let dateFormatter = DateFormatter()
@@ -52,14 +52,13 @@ final class APIService {
         task.resume()
     }
     
-    func getUsername() {
+    func getUserInfo() {
         let url = URL(string: instagramURL + "/me?fields=id,username&access_token=" + access_token)!
         let urlRequest = URLRequest(url: url)
         let task = URLSession.shared.dataTask(with: urlRequest) { data,_,error in
             guard let data = data else { return }
             DispatchQueue.main.async {
-                let a = try! JSONDecoder().decode(Info.self, from: data)
-                self.username = a.username
+                self.userInfo = try! JSONDecoder().decode(Info.self, from: data)
             }
         }
         task.resume()

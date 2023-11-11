@@ -33,14 +33,14 @@ final class ViewModel {
         do {
             let tokenData = try KeychainManager.getToken(account: "app")
             service.access_token = String(data: tokenData!, encoding: .utf8)!
-            service.getUsername()
+            service.getUserInfo()
             service.getContent()
         } catch {
             print(error)
         }
         dataObserver = NotificationCenter.default.addObserver(forName: Notification.Name.dataWasObtained, object: nil, queue: OperationQueue.main, using: { _ in
             self.user.media = self.service.photos!
-            self.user.username = self.service.username
+            self.user.username = self.service.userInfo.username
             self.delegate.setUsername(self.user.username)
             self.delegate.reloadCollectionView()
             Saver().saveData(self.user)

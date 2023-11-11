@@ -102,13 +102,13 @@ class StartViewController: UIViewController {
     
     @objc func login() {
         if FileManager().fileExists(atPath: File.getURL().path()){
-            let v = ViewController()
-            navigationController!.pushViewController(v, animated: true)
+            let viewController = ViewController()
+            navigationController!.pushViewController(viewController, animated: true)
         } else {
             let vc = LogInViewController()
             vc.pushViewController = { [weak self] in
-                let v = ViewController()
-                self?.navigationController!.pushViewController(v, animated: true)
+                let viewController = ViewController()
+                self?.navigationController!.pushViewController(viewController, animated: true)
             }
             present(vc, animated: true)
         }
