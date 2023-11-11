@@ -9,14 +9,13 @@ import UIKit
 
 class ViewController: UIViewController {
     
-    let accountSwitchBarButtonItem: UIBarButtonItem = {
+    let accountSwitchBarButton: UIButton = {
         let button = UIButton(type: .system)
-        button.setTitle("sw1.app", for: .normal)
         button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 26)
         //button.setImage(UIImage(systemName: "chevron.down", withConfiguration: UIImage.SymbolConfiguration(pointSize: 10, weight: .medium)), for: .normal)
         button.tintColor = UIColor(named: "text")
         //button.semanticContentAttribute = .forceRightToLeft
-        return UIBarButtonItem(customView: button)
+        return button
     }()
     
     let layout: UICollectionViewFlowLayout = {
@@ -49,7 +48,7 @@ class ViewController: UIViewController {
         addImageBarButtonItem.tintColor = UIColor(named: "text")
         openSettingsBarButtonItem.tintColor = UIColor(named: "text")
         navigationItem.rightBarButtonItems = [openSettingsBarButtonItem, addImageBarButtonItem]
-        navigationItem.leftBarButtonItem = accountSwitchBarButtonItem
+        navigationItem.leftBarButtonItem = UIBarButtonItem(customView: accountSwitchBarButton)
         DispatchQueue.main.async {
             self.picker = UIImagePickerController()
             self.picker.delegate = self
@@ -203,6 +202,12 @@ extension ViewController: UICollectionViewDragDelegate, UICollectionViewDropDele
 }
 
 extension ViewController: ViewModelDelegate {
+    
+    func setUsername(_ username: String) {
+        accountSwitchBarButton.setTitle(username, for: .normal)
+        accountSwitchBarButton.sizeToFit()
+    }
+    
     func reloadCollectionView() {
         collectionView.reloadData()
     }

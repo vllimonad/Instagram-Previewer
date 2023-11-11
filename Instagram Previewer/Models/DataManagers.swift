@@ -8,7 +8,7 @@
 import Foundation
 
 final class Saver {
-    func saveData(_ photos: [Data]) {
+    func saveData(_ photos: User) {
         if let data = try? JSONEncoder().encode(photos) {
             try? data.write(to: File.getURL())
         }
@@ -16,12 +16,12 @@ final class Saver {
 }
 
 final class Reader {
-    func readData() -> [Data] {
+    func readData() -> User {
         if let data = try? Data(contentsOf: File.getURL()) {
-            let photos = try! JSONDecoder().decode([Data].self, from: data)
-            return photos
+            let user = try! JSONDecoder().decode(User.self, from: data)
+            return user
         }
-        return []
+        return User(id: "", username: "", media: [])
     }
 }
 

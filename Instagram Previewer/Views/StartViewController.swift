@@ -8,8 +8,7 @@
 import UIKit
 
 class StartViewController: UIViewController {
-    
-    var startViewModel: StartViewModel!
+    /*
     private var showPassword: Bool = false
     
     private let usernameField: UITextField = {
@@ -60,14 +59,12 @@ class StartViewController: UIViewController {
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
-    
+    */
     override func viewDidLoad() {
         super.viewDidLoad()
-        startViewModel = StartViewModel()
-        startViewModel.delegate = self
-        setupLayout()
+        //setupLayout()
         login()
-    }
+    }/*
     
     func setupLayout() {
         view.addSubview(usernameField)
@@ -101,7 +98,7 @@ class StartViewController: UIViewController {
         } else {
             button.setImage(UIImage(systemName: "eye.slash", withConfiguration: UIImage.SymbolConfiguration(pointSize: 22, weight: .medium)), for: .normal)
         }
-    }
+    }*/
     
     @objc func login() {
         if FileManager().fileExists(atPath: File.getURL().path()){
@@ -115,11 +112,5 @@ class StartViewController: UIViewController {
             }
             present(vc, animated: true)
         }
-    }
-}
-
-extension StartViewController: StartViewModelDelegate {
-    func getNavigationController() -> UINavigationController {
-        return self.navigationController!
     }
 }

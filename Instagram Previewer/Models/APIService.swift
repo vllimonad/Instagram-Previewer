@@ -9,6 +9,7 @@ import Foundation
 
 final class APIService {
     
+    let instagramURL = "https://graph.instagram.com/"
     var content: Content?
     var photos: [Data]? {
         didSet {
@@ -17,27 +18,23 @@ final class APIService {
             }
         }
     }
+    var username: String!
     var userPicture: Data?
-    let urlString = "https://graph.instagram.com/"
-    var access_token = ""
+    var access_token: String!
     
     func getContent() {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ssZ"
-        let url = URL(string: urlString + "/me/media?fields=media_url,timestamp&access_token=" + access_token)
+        let url = URL(string: instagramURL + "/me/media?fields=media_url,timestamp&access_token=" + access_token)
         let urlRequest = URLRequest(url: url!)
         let task = URLSession.shared.dataTask(with: urlRequest) { data,response,error in
-            guard let data = data else { return }
+            guard let data = data, error == nil else { return }
             DispatchQueue.main.async {
-                do {
-                    self.content = try JSONDecoder().decode(Content.self, from: data)
-                    self.content?.data.sort(by: { dateFormatter.date(from:$0.timestamp)! > dateFormatter.date(from:$1.timestamp)!})
-                    self.photos = []
-                    for media in self.content!.data {
-                        self.getPhoto(media.media_url)
-                    }
-                } catch {
-                    print(error)
+                self.content = try? JSONDecoder().decode(Content.self, from: data)
+                self.content?.data.sort(by: { dateFormatter.date(from:$0.timestamp)! > dateFormatter.date(from:$1.timestamp)!})
+                self.photos = []
+                for media in self.content!.data {
+                    self.getPhoto(media.media_url)
                 }
             }
         }
@@ -55,17 +52,37 @@ final class APIService {
         task.resume()
     }
     
-    func getUserPicture() {
-        let userID = "6523499164443487"
-        let req = "https://graph.instagram.com/me?fields=id,username,profile_pic&access_token="
-        //let urlRequest = URLRequest(url: URL(string: urlString + userID + urlfield)!)
-        let urlRequest = URLRequest(url: URL(string: req + access_token)!)
-        let task = URLSession.shared.dataTask(with: urlRequest) { data,response,error in
-            guard let data = data, let user = try? JSONDecoder().decode(User.self, from: data) else { return }
-            self.userPicture = data
-            print(user.user_id)
-            //print(user.profile_pic)
+    func getUsername() {
+        let url = URL(string: instagramURL + "/me?fields=id,username&access_token=" + access_token)!
+        let urlRequest = URLRequest(url: url)
+        let task = URLSession.shared.dataTask(with: urlRequest) { data,_,error in
+            guard let data = data else { return }
+            DispatchQueue.main.async {
+                let a = try! JSONDecoder().decode(Info.self, from: data)
+                self.username = a.username
+            }
         }
         task.resume()
     }
+    
+    /*func getUserPicture() {
+        //let userID = "6523499164443487"
+        //let req = "https://graph.instagram.com/me?fields=id,username,profile_pic&access_token="
+        //let urlRequest = URLRequest(url: URL(string: urlString + userID + urlfield)!)
+        print("GETTING")
+        let urlRequest = URLRequest(url: URL(string: "https://www.instagram.com/sw.app1/?__a=1&__d=1")!)
+        let task = URLSession.shared.dataTask(with: urlRequest) { data,response,error in
+            guard let data = data else {
+                print("be")
+                return }
+            do {
+                let user = try JSONDecoder().decode(Welcome.self, from: data)
+                let s = user.graphql.user.profilePicURL
+                print(s)
+            } catch {
+                print(error)
+            }
+        }
+        task.resume()
+    }*/
 }

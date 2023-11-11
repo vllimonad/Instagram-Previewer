@@ -9,7 +9,7 @@ import Foundation
 
 final class LogInModel{
     
-    var user: User!
+    var profile: Profile!
     var longLivedToken: LongLivedToken! {
         didSet {
             NotificationCenter.default.post(Notification(name: Notification.Name.accessTokenWasObtained))
@@ -22,9 +22,9 @@ final class LogInModel{
         urlRequest.httpMethod = "POST"
         urlRequest.httpBody = body.data(using: .utf8)
         let task = URLSession.shared.dataTask(with: urlRequest) { data,response,error in
-            guard let data = data, let user = try? JSONDecoder().decode(User.self, from: data) else { return }
+            guard let data = data, let profile = try? JSONDecoder().decode(Profile.self, from: data) else { return }
             DispatchQueue.main.async {
-                self.user = user
+                self.profile = profile
                 self.getLongLivedAccessToken()
             }
         }
@@ -32,15 +32,15 @@ final class LogInModel{
     }
     
     func getLongLivedAccessToken() {
-        let urlString = "https://graph.instagram.com/access_token?grant_type=ig_exchange_token&client_secret=deae2d2af8d9e01e52226d4905c5b513&access_token=" + user.access_token
+        let urlString = "https://graph.instagram.com/access_token?grant_type=ig_exchange_token&client_secret=deae2d2af8d9e01e52226d4905c5b513&access_token=" + profile.access_token
         let urlRequest = URLRequest(url: URL(string: urlString)!)
         let task = URLSession.shared.dataTask(with: urlRequest) { data,response,error in
             guard let data = data, let token = try? JSONDecoder().decode(LongLivedToken.self, from: data) else { return }
             DispatchQueue.main.async {
                 self.longLivedToken = token
                 print("TOKEN: \(self.longLivedToken.access_token)")
-                //print("RESPONSE: \(response)")
-                //print("ERROR: \(error)")
+                print("RESPONSE: \(response)")
+                print("ERROR: \(error)")
             }
         }
         task.resume()

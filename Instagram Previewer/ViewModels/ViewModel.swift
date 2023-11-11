@@ -11,6 +11,7 @@ import UIKit
 final class ViewModel {
     
     private var service: APIService!
+    private var user: User!
     private var saver: Saver!
     private var reader: Reader!
     var delegate: ViewModelDelegate!
@@ -23,27 +24,35 @@ final class ViewModel {
     }
     
     func getDataFromFile() {
-        service.photos = reader.readData()
+        user = reader.readData()
+        delegate.setUsername(self.user.username)
         delegate.reloadCollectionView()
     }
     
     func getDataFromServer() {
-        let tokenData = try? KeychainManager.getToken(account: "app")
-        service.access_token = String(data: tokenData!, encoding: .utf8)!
-        service.getContent()
-        //service.getUserPicture()
+        do {
+            let tokenData = try KeychainManager.getToken(account: "app")
+            service.access_token = String(data: tokenData!, encoding: .utf8)!
+            service.getUsername()
+            service.getContent()
+        } catch {
+            print(error)
+        }
         dataObserver = NotificationCenter.default.addObserver(forName: Notification.Name.dataWasObtained, object: nil, queue: OperationQueue.main, using: { _ in
-            Saver().saveData(self.service.photos!)
+            self.user.media = self.service.photos!
+            self.user.username = self.service.username
+            self.delegate.setUsername(self.user.username)
             self.delegate.reloadCollectionView()
+            Saver().saveData(self.user)
         })
     }
     
     func getNumberOfItems() -> Int {
-        return service.photos == nil ? 0 : service.photos!.count
+        return user.media.count
     }
     
     func getItemAt(_ index: Int) -> UIImage {
-        return UIImage(data: service.photos![index])!
+        return UIImage(data: user.media[index])!
     }
     
     func getUserPicture() -> UIImage {
@@ -52,14 +61,14 @@ final class ViewModel {
     }
     
     func removeItemAt(_ index: Int) -> Data {
-        let item = service.photos?.remove(at: index)
-        saver.saveData(service.photos!)
-        return item!
+        let item = user.media.remove(at: index)
+        saver.saveData(user)
+        return item
     }
     
     func insertItemAt(_ data: Data, _ index: Int) {
-        service.photos?.insert(data, at: index)
-        saver.saveData(service.photos!)
+        user.media.insert(data, at: index)
+        saver.saveData(user)
         delegate.reloadCollectionView()
     }
     
@@ -67,4 +76,5 @@ final class ViewModel {
 
 protocol ViewModelDelegate {
     func reloadCollectionView()
+    func setUsername(_ username: String)
 }

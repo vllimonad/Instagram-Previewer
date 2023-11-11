@@ -26,7 +26,7 @@ struct Media: Codable {
     let timestamp: String
 }
 
-struct User: Codable {
+struct Profile: Codable {
     let access_token: String
     let user_id: Int
 }
@@ -35,4 +35,15 @@ struct LongLivedToken: Codable {
     let access_token: String
     let token_type: String
     let expires_in: Int
+}
+
+struct User: Codable {
+    let id: String
+    var username: String
+    var media: [Data]
+}
+
+struct Info: Codable {
+    let id: String
+    let username: String
 }
