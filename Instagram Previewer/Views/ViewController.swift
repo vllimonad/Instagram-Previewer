@@ -34,6 +34,7 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         addBarButtons()
+        addImagePicker()
         setupCollectionView()
         viewModel = ViewModel()
         viewModel.delegate = self
@@ -41,14 +42,31 @@ class ViewController: UIViewController {
     }
     
     func addBarButtons() {
-        let plusImage = UIImage(systemName: "plus.app", withConfiguration: UIImage.SymbolConfiguration(pointSize: 20, weight: .medium))
-        let settingsImage = UIImage(systemName: "ellipsis.circle", withConfiguration: UIImage.SymbolConfiguration(pointSize: 20, weight: .medium))
-        let addImageBarButtonItem = UIBarButtonItem(image: plusImage, style: .plain, target: self, action: #selector(addImage))
-        let openSettingsBarButtonItem = UIBarButtonItem(image: settingsImage, style: .plain, target: self, action: #selector(openSettings))
-        addImageBarButtonItem.tintColor = UIColor(named: "text")
-        openSettingsBarButtonItem.tintColor = UIColor(named: "text")
-        navigationItem.rightBarButtonItems = [openSettingsBarButtonItem, addImageBarButtonItem]
+        navigationItem.rightBarButtonItems = [getOpenSettingsBarButtonItem(), getAddImageBarButtonItem()]
         navigationItem.leftBarButtonItem = UIBarButtonItem(customView: accountSwitchBarButton)
+    }
+    
+    func getOpenSettingsBarButtonItem() -> UIBarButtonItem {
+        let settingsImage = UIImage(systemName: "ellipsis.circle", withConfiguration: UIImage.SymbolConfiguration(pointSize: 20, weight: .medium))
+        let openSettingsBarButtonItem = UIBarButtonItem(image: settingsImage, menu: getSettingsMenu())
+        openSettingsBarButtonItem.tintColor = UIColor(named: "text")
+        return openSettingsBarButtonItem
+    }
+    
+    func getAddImageBarButtonItem() -> UIBarButtonItem {
+        let plusImage = UIImage(systemName: "plus.app", withConfiguration: UIImage.SymbolConfiguration(pointSize: 20, weight: .medium))
+        let addImageBarButtonItem = UIBarButtonItem(image: plusImage, style: .plain, target: self, action: #selector(addImage))
+        addImageBarButtonItem.tintColor = UIColor(named: "text")
+        return addImageBarButtonItem
+    }
+    
+    func getSettingsMenu() -> UIMenu {
+        let logoutAction = UIAction(title: "Log out", image: UIImage(systemName: "rectangle.portrait.and.arrow.right"), attributes: .destructive){ _ in }
+        let resetAction = UIAction(title: "Reset", image: UIImage(systemName: "arrow.triangle.2.circlepath"), handler: reset(_:))
+        return UIMenu(children: [resetAction, logoutAction])
+    }
+    
+    func addImagePicker() {
         DispatchQueue.main.async {
             self.picker = UIImagePickerController()
             self.picker.delegate = self
@@ -56,15 +74,18 @@ class ViewController: UIViewController {
         }
     }
     
-    @objc func openSettings() {
+    func reset(_ action: UIAction) {
         viewModel.getDataFromServer()
+        
     }
     
     @objc func addImage() {
         present(picker, animated: true)
     }
     
-    @objc func showAccounts() {}
+    @objc func showAccounts() {
+
+    }
 
     
 }
@@ -77,14 +98,14 @@ extension ViewController: UICollectionViewDelegate, UICollectionViewDataSource, 
         collectionView.register(PhotoViewCell.self, forCellWithReuseIdentifier: PhotoViewCell.id)
         collectionView.register(IconsHeaderCollectionReusableView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: IconsHeaderCollectionReusableView.id)
         collectionView.register(InfoHeaderCollectionReusableView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: InfoHeaderCollectionReusableView.id)
+        collectionView.frame = view.bounds
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         collectionView.delegate = self
         collectionView.dataSource = self
-        collectionView.frame = view.bounds
-        view.addSubview(collectionView)
         collectionView.dragDelegate = self
         collectionView.dropDelegate = self
         collectionView.dragInteractionEnabled = true
+        view.addSubview(collectionView)
     }
     
     func numberOfSections(in collectionView: UICollectionView) -> Int {
