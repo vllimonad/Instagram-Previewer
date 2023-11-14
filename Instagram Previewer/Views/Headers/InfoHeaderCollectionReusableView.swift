@@ -7,7 +7,7 @@
 
 import UIKit
 
-class InfoHeaderCollectionReusableView: UICollectionReusableView {
+final class InfoHeaderCollectionReusableView: UICollectionReusableView {
     
     static let id = "info"
     

@@ -74,6 +74,7 @@ final class ViewController: UIViewController {
             self.picker.allowsEditing = true
         }
     }
+    
     private var webView: WKWebView!
     
     func logout(_ action: UIAction) {

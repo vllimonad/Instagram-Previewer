@@ -38,9 +38,6 @@ final class LogInModel{
             guard let data = data, let token = try? JSONDecoder().decode(LongLivedToken.self, from: data) else { return }
             DispatchQueue.main.async {
                 self.longLivedToken = token
-                //print("TOKEN: \(self.longLivedToken.access_token)")
-                //print("RESPONSE: \(response)")
-                //print("ERROR: \(error)")
             }
         }
         task.resume()

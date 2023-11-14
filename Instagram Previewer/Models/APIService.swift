@@ -9,7 +9,6 @@ import Foundation
 
 final class APIService {
     
-    let instagramURL = "https://graph.instagram.com/"
     var userInfo: Info!
     var userPicture: Data?
     var access_token: String!
@@ -26,7 +25,7 @@ final class APIService {
         //let dateFormatter = DateFormatter()
         //dateFormatter.dateStyle = .full
         //dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ssZ"
-        let url = URL(string: instagramURL + "/me/media?fields=media_url,timestamp&access_token=" + access_token)
+        let url = URL(string: "https://graph.instagram.com//me/media?fields=media_url,timestamp&access_token=" + access_token)
         let urlRequest = URLRequest(url: url!)
         let task = URLSession.shared.dataTask(with: urlRequest) { data,response,error in
             guard let data = data, error == nil else { return }
@@ -54,7 +53,7 @@ final class APIService {
     }
     
     func getUserInfo() {
-        let url = URL(string: instagramURL + "/me?fields=id,username&access_token=" + access_token)!
+        let url = URL(string: "https://graph.instagram.com//me?fields=id,username&access_token=" + access_token)!
         let urlRequest = URLRequest(url: url)
         let task = URLSession.shared.dataTask(with: urlRequest) { data,_,error in
             guard let data = data else { return }

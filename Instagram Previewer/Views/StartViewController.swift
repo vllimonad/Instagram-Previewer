@@ -36,12 +36,12 @@ final class StartViewController: UIViewController {
             let viewController = ViewController()
             navigationController!.pushViewController(viewController, animated: true)
         } else {
-            let vc = LogInViewController()
-            vc.pushViewController = { [weak self] in
+            let loginViewController = LogInViewController()
+            loginViewController.pushViewController = { [weak self] in
                 let viewController = ViewController()
                 self?.navigationController!.pushViewController(viewController, animated: true)
             }
-            present(vc, animated: true)
+            present(loginViewController, animated: true)
         }
     }
 }
