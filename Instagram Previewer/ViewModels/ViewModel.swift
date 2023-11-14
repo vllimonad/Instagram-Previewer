@@ -10,15 +10,15 @@ import UIKit
 
 final class ViewModel {
     
-    private var service: APIService!
+    private var apiService: APIService!
     private var user: User!
     private var saver: Saver!
     private var reader: Reader!
     var delegate: ViewModelDelegate!
-    var dataObserver: NSObjectProtocol!
+    private var dataObserver: NSObjectProtocol!
     
     init() {
-        service = APIService()
+        apiService = APIService()
         saver = Saver()
         reader = Reader()
     }
@@ -32,19 +32,23 @@ final class ViewModel {
     func getDataFromServer() {
         do {
             let tokenData = try KeychainManager.getToken(account: "app")
-            service.access_token = String(data: tokenData!, encoding: .utf8)!
-            service.getUserInfo()
-            service.getContent()
+            apiService.access_token = String(data: tokenData!, encoding: .utf8)!
+            apiService.getUserInfo()
+            apiService.getContent()
         } catch {
             print(error)
         }
         dataObserver = NotificationCenter.default.addObserver(forName: Notification.Name.dataWasObtained, object: nil, queue: OperationQueue.main, using: { _ in
-            self.user.media = self.service.photos!
-            self.user.username = self.service.userInfo.username
+            self.user.media = self.apiService.photos!
+            self.user.username = self.apiService.userInfo.username
             self.delegate.setUsername(self.user.username)
             self.delegate.reloadCollectionView()
             Saver().saveData(self.user)
         })
+    }
+    
+    func logout() {
+        File.removeFile(File.getURL())
     }
     
     func getNumberOfItems() -> Int {
@@ -56,7 +60,7 @@ final class ViewModel {
     }
     
     func getUserPicture() -> UIImage {
-        guard let picture = service.userPicture else { return UIImage(systemName: "circle")!}
+        guard let picture = apiService.userPicture else { return UIImage(systemName: "circle")!}
         return UIImage(data: picture)!
     }
     

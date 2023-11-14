@@ -26,9 +26,18 @@ final class Reader {
 }
 
 final class File {
+    
     static func getURL() -> URL {
         let url = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first
         //print(url!.appending(path: "PhotosData.txt"))
         return url!.appending(path: "PhotosData.txt")
+    }
+    
+    static func removeFile(_ url: URL) {
+        do {
+            try FileManager.default.removeItem(at: url)
+        } catch {
+            print(error)
+        }
     }
 }

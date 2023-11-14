@@ -7,7 +7,7 @@
 
 import UIKit
 
-class PhotoViewCell: UICollectionViewCell {
+final class PhotoViewCell: UICollectionViewCell {
     
     static let id = "PhotoCell"
     

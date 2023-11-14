@@ -14,6 +14,7 @@ final class LogInViewController: UIViewController, WKNavigationDelegate, WKUIDel
     private let urlString = "https://api.instagram.com/oauth/authorize?client_id=348133480999841&redirect_uri=https://socialsizzle.herokuapp.com/auth/&scope=user_profile,user_media&response_type=code"
     var logInViewModel: LogInViewModel!
     var pushViewController: (()->Void)!
+    var i = 0
     
     override func loadView() {
         webView = WKWebView()
@@ -29,8 +30,10 @@ final class LogInViewController: UIViewController, WKNavigationDelegate, WKUIDel
     }
     
     override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
-        if keyPath == "URL", (webView.url?.absoluteString)!.hasPrefix("https://socialsizzle.herokuapp.com/auth/?code=") {
+        if keyPath == "URL", (webView.url?.absoluteString)!.hasPrefix("https://socialsizzle.herokuapp.com/auth/?code="), i == 0 {
             logInViewModel.getCodeFrom((webView.url?.absoluteString)!)
+            i += 1
+            //webView.removeObserver(self, forKeyPath: "URL")
         }
     }
 }
@@ -39,5 +42,6 @@ extension LogInViewController: LogInViewModelDelegate {
     func dismissViewController() {
         dismiss(animated: true)
         pushViewController()
+        print("dismiss")
     }
 }

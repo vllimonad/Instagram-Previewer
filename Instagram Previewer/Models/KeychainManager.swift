@@ -12,8 +12,7 @@ enum KeychainError: Error {
     case unknown(OSStatus)
 }
 
-class KeychainManager {
-    
+final class KeychainManager {
     
     static func saveToken(token: Data, account: String) throws {
         let query: [CFString: Any] = [

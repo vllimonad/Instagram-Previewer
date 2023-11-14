@@ -6,8 +6,9 @@
 //
 
 import UIKit
+import WebKit
 
-class ViewController: UIViewController {
+final class ViewController: UIViewController {
     
     let accountSwitchBarButton: UIButton = {
         let button = UIButton(type: .system)
@@ -61,7 +62,7 @@ class ViewController: UIViewController {
     }
     
     func getSettingsMenu() -> UIMenu {
-        let logoutAction = UIAction(title: "Log out", image: UIImage(systemName: "rectangle.portrait.and.arrow.right"), attributes: .destructive){ _ in }
+        let logoutAction = UIAction(title: "Log out", image: UIImage(systemName: "rectangle.portrait.and.arrow.right"), attributes: .destructive, handler: logout(_:))
         let resetAction = UIAction(title: "Reset", image: UIImage(systemName: "arrow.triangle.2.circlepath"), handler: reset(_:))
         return UIMenu(children: [resetAction, logoutAction])
     }
@@ -73,10 +74,17 @@ class ViewController: UIViewController {
             self.picker.allowsEditing = true
         }
     }
+    private var webView: WKWebView!
+    
+    func logout(_ action: UIAction) {
+        webView = WKWebView()
+        webView.load(URLRequest(url: URL(string: "https://instagram.com/accounts/logout/")!))
+        viewModel.logout()
+        navigationController?.popViewController(animated: true)
+    }
     
     func reset(_ action: UIAction) {
         viewModel.getDataFromServer()
-        
     }
     
     @objc func addImage() {

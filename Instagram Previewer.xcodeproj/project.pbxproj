@@ -64,10 +64,9 @@
 		2B32B05F2AE3D6D50093BDBD /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				2BFCAE112B025D750099B92F /* Headers */,
 				2BD445412ADDAD350019ADEC /* ViewController.swift */,
 				2B6C87392AE04FF800590C3B /* StartViewController.swift */,
-				2B162B002ADECF1300C29696 /* IconsHeaderCollectionReusableView.swift */,
-				2B162B022ADEEB1400C29696 /* InfoHeaderCollectionReusableView.swift */,
 				2BD445552ADDD8CD0019ADEC /* PhotoViewCell.swift */,
 				2BD445512ADDAEF10019ADEC /* LogInViewController.swift */,
 			);
@@ -125,6 +124,15 @@
 				2BD4454B2ADDAD360019ADEC /* Info.plist */,
 			);
 			path = "Instagram Previewer";
+			sourceTree = "<group>";
+		};
+		2BFCAE112B025D750099B92F /* Headers */ = {
+			isa = PBXGroup;
+			children = (
+				2B162B002ADECF1300C29696 /* IconsHeaderCollectionReusableView.swift */,
+				2B162B022ADEEB1400C29696 /* InfoHeaderCollectionReusableView.swift */,
+			);
+			path = Headers;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
