@@ -22,14 +22,9 @@ final class StartViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        setupLayout()
-    }
-    
-    func setupLayout() {
         logInButton.frame = CGRect(x: (view.frame.width/2)-70, y: 500, width: 140, height: 50)
         view.addSubview(logInButton)
     }
-    
     
     @objc func login() {
         if FileManager().fileExists(atPath: File.getURL().path()){

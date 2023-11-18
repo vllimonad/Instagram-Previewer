@@ -13,9 +13,7 @@ final class ViewController: UIViewController {
     let accountSwitchBarButton: UIButton = {
         let button = UIButton(type: .system)
         button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 26)
-        //button.setImage(UIImage(systemName: "chevron.down", withConfiguration: UIImage.SymbolConfiguration(pointSize: 10, weight: .medium)), for: .normal)
         button.tintColor = UIColor(named: "text")
-        //button.semanticContentAttribute = .forceRightToLeft
         return button
     }()
     
@@ -100,12 +98,6 @@ final class ViewController: UIViewController {
     @objc func addImage() {
         present(picker, animated: true)
     }
-    
-    @objc func showAccounts() {
-
-    }
-
-    
 }
 
 extension ViewController: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
@@ -114,8 +106,7 @@ extension ViewController: UICollectionViewDelegate, UICollectionViewDataSource, 
         layout.itemSize = CGSize(width: view.frame.width/3, height: view.frame.width/3)
         collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.register(PhotoViewCell.self, forCellWithReuseIdentifier: PhotoViewCell.id)
-        collectionView.register(IconsHeaderCollectionReusableView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: IconsHeaderCollectionReusableView.id)
-        collectionView.register(InfoHeaderCollectionReusableView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: InfoHeaderCollectionReusableView.id)
+        collectionView.register(IconsHeaderView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: IconsHeaderView.id)
         collectionView.frame = view.bounds
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         collectionView.delegate = self
@@ -142,7 +133,7 @@ extension ViewController: UICollectionViewDelegate, UICollectionViewDataSource, 
     }
     
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
-        let iconsHeader = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: IconsHeaderCollectionReusableView.id, for: indexPath) as! IconsHeaderCollectionReusableView
+        let iconsHeader = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: IconsHeaderView.id, for: indexPath) as! IconsHeaderView
         iconsHeader.configure()
         return iconsHeader
     }

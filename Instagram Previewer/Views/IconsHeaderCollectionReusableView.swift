@@ -7,15 +7,9 @@
 
 import UIKit
 
-final class IconsHeaderCollectionReusableView: UICollectionReusableView {
+final class IconsHeaderView: UICollectionReusableView {
     
     static let id = "icons"
-    
-    let slider: UISlider = {
-        let slider = UISlider()
-        slider.translatesAutoresizingMaskIntoConstraints = false
-        return slider
-    }()
     
     let photosButton: UIButton = {
         let button = UIButton(type: .system)

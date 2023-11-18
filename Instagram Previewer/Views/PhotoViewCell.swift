@@ -10,10 +10,11 @@ import UIKit
 final class PhotoViewCell: UICollectionViewCell {
     
     static let id = "PhotoCell"
-    var imageView = UIImageView()
+    var imageView: UIImageView!
 
     override init(frame: CGRect) {
         super.init(frame: frame)
+        imageView = UIImageView()
         imageView.frame = contentView.bounds
         addSubview(imageView)
     }

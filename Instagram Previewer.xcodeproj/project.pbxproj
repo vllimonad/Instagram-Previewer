@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		2B162B012ADECF1300C29696 /* IconsHeaderCollectionReusableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B162B002ADECF1300C29696 /* IconsHeaderCollectionReusableView.swift */; };
-		2B162B032ADEEB1400C29696 /* InfoHeaderCollectionReusableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B162B022ADEEB1400C29696 /* InfoHeaderCollectionReusableView.swift */; };
 		2B32B0622AE3D7220093BDBD /* ViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B32B0612AE3D7220093BDBD /* ViewModel.swift */; };
 		2B32B0652AE472D30093BDBD /* APIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B32B0642AE472D30093BDBD /* APIService.swift */; };
 		2B32B0672AE4733A0093BDBD /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B32B0662AE4733A0093BDBD /* Models.swift */; };
@@ -29,7 +28,6 @@
 
 /* Begin PBXFileReference section */
 		2B162B002ADECF1300C29696 /* IconsHeaderCollectionReusableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IconsHeaderCollectionReusableView.swift; sourceTree = "<group>"; };
-		2B162B022ADEEB1400C29696 /* InfoHeaderCollectionReusableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfoHeaderCollectionReusableView.swift; sourceTree = "<group>"; };
 		2B32B0612AE3D7220093BDBD /* ViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewModel.swift; sourceTree = "<group>"; };
 		2B32B0642AE472D30093BDBD /* APIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIService.swift; sourceTree = "<group>"; };
 		2B32B0662AE4733A0093BDBD /* Models.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models.swift; sourceTree = "<group>"; };
@@ -64,11 +62,11 @@
 		2B32B05F2AE3D6D50093BDBD /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				2BFCAE112B025D750099B92F /* Headers */,
-				2BD445412ADDAD350019ADEC /* ViewController.swift */,
 				2B6C87392AE04FF800590C3B /* StartViewController.swift */,
-				2BD445552ADDD8CD0019ADEC /* PhotoViewCell.swift */,
 				2BD445512ADDAEF10019ADEC /* LogInViewController.swift */,
+				2BD445412ADDAD350019ADEC /* ViewController.swift */,
+				2BD445552ADDD8CD0019ADEC /* PhotoViewCell.swift */,
+				2B162B002ADECF1300C29696 /* IconsHeaderCollectionReusableView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -124,15 +122,6 @@
 				2BD4454B2ADDAD360019ADEC /* Info.plist */,
 			);
 			path = "Instagram Previewer";
-			sourceTree = "<group>";
-		};
-		2BFCAE112B025D750099B92F /* Headers */ = {
-			isa = PBXGroup;
-			children = (
-				2B162B002ADECF1300C29696 /* IconsHeaderCollectionReusableView.swift */,
-				2B162B022ADEEB1400C29696 /* InfoHeaderCollectionReusableView.swift */,
-			);
-			path = Headers;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -214,7 +203,6 @@
 				2B3D6AD72AE6AB9C00F0AF28 /* LogInViewModel.swift in Sources */,
 				2B6C873A2AE04FF800590C3B /* StartViewController.swift in Sources */,
 				2B51A6242AF044C300F98D00 /* KeychainManager.swift in Sources */,
-				2B162B032ADEEB1400C29696 /* InfoHeaderCollectionReusableView.swift in Sources */,
 				2B32B0652AE472D30093BDBD /* APIService.swift in Sources */,
 				2B162B012ADECF1300C29696 /* IconsHeaderCollectionReusableView.swift in Sources */,
 				2BD445562ADDD8CD0019ADEC /* PhotoViewCell.swift in Sources */,
