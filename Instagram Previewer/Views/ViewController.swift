@@ -62,7 +62,7 @@ final class ViewController: UIViewController {
     }
     
     func getSettingsMenu() -> UIMenu {
-        let logoutAction = UIAction(title: "Log out", image: UIImage(systemName: "rectangle.portrait.and.arrow.right"), attributes: .destructive, handler: logout(_:))
+        let logoutAction = UIAction(title: "Log out", image: UIImage(systemName: "rectangle.portrait.and.arrow.right"), attributes: .destructive, handler: showLogOutAlert(_:))
         let resetAction = UIAction(title: "Reset", image: UIImage(systemName: "arrow.triangle.2.circlepath"), handler: reset(_:))
         return UIMenu(children: [resetAction, logoutAction])
     }
@@ -75,9 +75,18 @@ final class ViewController: UIViewController {
         }
     }
     
+    func showLogOutAlert(_ action: UIAction) {
+        let alertController = UIAlertController(title: "Log out from \(accountSwitchBarButton.title(for: .normal)!)?", message: "All changes will be deleted ", preferredStyle: .alert)
+        alertController.addAction(UIAlertAction(title: "Cancel", style: .default))
+        alertController.addAction(UIAlertAction(title: "Continue", style: .destructive){ [weak self] _ in
+            self?.logout()
+        })
+        present(alertController, animated: true)
+    }
+    
     private var webView: WKWebView!
     
-    func logout(_ action: UIAction) {
+    func logout() {
         webView = WKWebView()
         webView.load(URLRequest(url: URL(string: "https://instagram.com/accounts/logout/")!))
         viewModel.logout()
@@ -118,13 +127,10 @@ extension ViewController: UICollectionViewDelegate, UICollectionViewDataSource, 
     }
     
     func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return 2
+        return 1
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        if section == 0 {
-            return 0
-        }
         return viewModel.getNumberOfItems()
     }
     
@@ -136,22 +142,13 @@ extension ViewController: UICollectionViewDelegate, UICollectionViewDataSource, 
     }
     
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
-        if indexPath.section == 0 {
-            let infoHeader = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: InfoHeaderCollectionReusableView.id, for: indexPath) as! InfoHeaderCollectionReusableView
-            infoHeader.userAvatarButton.setImage(viewModel.getUserPicture(), for: .normal)
-            return infoHeader
-        }
         let iconsHeader = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: IconsHeaderCollectionReusableView.id, for: indexPath) as! IconsHeaderCollectionReusableView
         iconsHeader.configure()
         return iconsHeader
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
-        if section == 0 {
-            return CGSize(width: view.frame.width, height: view.frame.height/3)
-        } else {
-            return CGSize(width: view.frame.width, height: view.frame.height/16)
-        }
+        return CGSize(width: view.frame.width, height: view.frame.height/16)
     }
     
     func collectionView(_ collectionView: UICollectionView, contextMenuConfigurationForItemsAt indexPaths: [IndexPath], point: CGPoint) -> UIContextMenuConfiguration? {

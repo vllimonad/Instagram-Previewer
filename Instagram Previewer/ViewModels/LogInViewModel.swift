@@ -40,11 +40,11 @@ final class LogInViewModel {
         })
         
         dataObserver = NotificationCenter.default.addObserver(forName: Notification.Name.dataWasObtained, object: nil, queue: OperationQueue.main, using: { _ in
-            Saver().saveData(User(id: self.apiService.userInfo.id,
+            Saver.saveData(User(id: self.apiService.userInfo.id,
                                   username: self.apiService.userInfo.username,
                                   media: self.apiService.photos!))
-            self.delegate.dismissViewController()
             self.removeObservers()
+            self.delegate.dismissViewController()
         })
         model.getAccessToken(for: code)
     }

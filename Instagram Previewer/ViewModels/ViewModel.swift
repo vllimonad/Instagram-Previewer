@@ -12,19 +12,15 @@ final class ViewModel {
     
     private var apiService: APIService!
     private var user: User!
-    private var saver: Saver!
-    private var reader: Reader!
     var delegate: ViewModelDelegate!
     private var dataObserver: NSObjectProtocol!
     
     init() {
         apiService = APIService()
-        saver = Saver()
-        reader = Reader()
     }
     
     func getDataFromFile() {
-        user = reader.readData()
+        user = Reader.readData()
         delegate.setUsername(self.user.username)
         delegate.reloadCollectionView()
     }
@@ -43,7 +39,7 @@ final class ViewModel {
             self.user.username = self.apiService.userInfo.username
             self.delegate.setUsername(self.user.username)
             self.delegate.reloadCollectionView()
-            Saver().saveData(self.user)
+            Saver.saveData(self.user)
         })
     }
     
@@ -59,20 +55,15 @@ final class ViewModel {
         return UIImage(data: user.media[index])!
     }
     
-    func getUserPicture() -> UIImage {
-        guard let picture = apiService.userPicture else { return UIImage(systemName: "circle")!}
-        return UIImage(data: picture)!
-    }
-    
     func removeItemAt(_ index: Int) -> Data {
         let item = user.media.remove(at: index)
-        saver.saveData(user)
+        Saver.saveData(user)
         return item
     }
     
     func insertItemAt(_ data: Data, _ index: Int) {
         user.media.insert(data, at: index)
-        saver.saveData(user)
+        Saver.saveData(user)
         delegate.reloadCollectionView()
     }
     

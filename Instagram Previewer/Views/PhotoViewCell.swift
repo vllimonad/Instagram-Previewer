@@ -10,7 +10,6 @@ import UIKit
 final class PhotoViewCell: UICollectionViewCell {
     
     static let id = "PhotoCell"
-    
     var imageView = UIImageView()
 
     override init(frame: CGRect) {
@@ -21,9 +20,5 @@ final class PhotoViewCell: UICollectionViewCell {
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
-    }
-    
-    func configure() {
-        
     }
 }
