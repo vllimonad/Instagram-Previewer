@@ -1,9 +1,10 @@
 # Instagram Previewer Application
-An iOS application that provides a comprehensive solution for managing your Instagram posts. 
+#### An iOS application that provides a comprehensive solution for managing your Instagram posts. 
 
-With the help of Instagram Previewer you can effortlessly view, reorganize, add, and remove posts, giving you full control over your Instagram content strategy.
+With the help of Instagram Previewer you can effortlessly view, reorganize, add, and remove posts. giving you full control over your Instagram content strategy.
 
-You don't need to provide any personal data. After opening application you will log in to your account from Instagram website.
+It works using Instagram Basic Display API that allows users to get basic profile information, photos, and videos in their Instagram accounts. Application stores users photos on their devices and doesn't store logins and passwords. Logging in occurs on Instagram website log in page.
+
 
 
 ### Frameworks
