@@ -28,6 +28,7 @@ final class ViewController: UIViewController {
     
     var collectionView: UICollectionView!
     var picker: UIImagePickerController!
+    var webView: WKWebView!
     var viewModel: ViewModel!
 
     override func viewDidLoad() {
@@ -81,8 +82,6 @@ final class ViewController: UIViewController {
         })
         present(alertController, animated: true)
     }
-    
-    private var webView: WKWebView!
     
     func logout() {
         webView = WKWebView()

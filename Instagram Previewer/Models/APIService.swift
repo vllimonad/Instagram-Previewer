@@ -25,6 +25,7 @@ final class APIService {
         let urlRequest = URLRequest(url: url!)
         let task = URLSession.shared.dataTask(with: urlRequest) { data,response,error in
             guard let data = data, error == nil else { return }
+            guard let tokenError = try? JSONDecoder().decode(TokenError.self, from: data) else { return }
             DispatchQueue.main.async {
                 self.content = try? JSONDecoder().decode(Content.self, from: data)
                 self.photos = []
@@ -51,7 +52,9 @@ final class APIService {
         let url = URL(string: "https://graph.instagram.com//me?fields=id,username&access_token=" + access_token)!
         let urlRequest = URLRequest(url: url)
         let task = URLSession.shared.dataTask(with: urlRequest) { data,_,error in
-            guard let data = data else { return }
+            guard let data = data, error == nil else {
+                
+                return }
             DispatchQueue.main.async {
                 self.userInfo = try! JSONDecoder().decode(Info.self, from: data)
             }

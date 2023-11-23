@@ -47,3 +47,8 @@ struct Info: Codable {
     let id: String
     let username: String
 }
+
+struct TokenError: Codable {
+    let message: String
+    let code: String
+}
