@@ -35,7 +35,7 @@ final class LogInViewModel {
             do {
                 try KeychainManager.saveToken(token: self.model.longLivedToken.access_token.data(using: .utf8)!, account: "app")
             } catch {
-                print("KeyChain error: ", error)
+                print("Keychain error: ", error)
             }
         })
         

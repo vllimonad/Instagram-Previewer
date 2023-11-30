@@ -13,7 +13,6 @@ final class ViewModel {
     private var apiService: APIService!
     private var user: User!
     var delegate: ViewModelDelegate!
-    private var dataObserver: NSObjectProtocol!
     
     init() {
         apiService = APIService()
@@ -31,15 +30,23 @@ final class ViewModel {
             apiService.access_token = String(data: tokenData!, encoding: .utf8)!
             apiService.getUserInfo()
             apiService.getContent()
-        } catch {
-            print(error)
-        }
-        dataObserver = NotificationCenter.default.addObserver(forName: Notification.Name.dataWasObtained, object: nil, queue: OperationQueue.main, using: { _ in
+        } catch { print(error) }
+        NotificationCenter.default.addObserver(forName: Notification.Name.dataWasObtained, object: nil, queue: OperationQueue.main, using: { _ in
             self.user.media = self.apiService.photos!
             self.user.username = self.apiService.userInfo.username
             self.delegate.setUsername(self.user.username)
             self.delegate.reloadCollectionView()
             Saver.saveData(self.user)
+        })
+        NotificationCenter.default.addObserver(forName: Notification.Name.tokenExpired, object: nil, queue: OperationQueue.main, using: { _ in
+            self.apiService.refreshToken()
+        })
+        NotificationCenter.default.addObserver(forName: Notification.Name.tokenWasRefreshed, object: nil, queue: OperationQueue.main, using: { _ in
+            do {
+                try KeychainManager.saveToken(token: self.apiService.access_token.data(using: .utf8)!, account: "app")
+                self.apiService.getUserInfo()
+                self.apiService.getContent()
+            } catch { print("Keychain error: ", error) }
         })
     }
     
