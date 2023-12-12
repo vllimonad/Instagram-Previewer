@@ -22,6 +22,7 @@ struct Content: Codable {
 }
 
 struct Media: Codable {
+    let media_type: String
     let media_url: String
     let timestamp: String
 }

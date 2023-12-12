@@ -59,6 +59,9 @@ final class ViewModel {
     }
     
     func getItemAt(_ index: Int) -> UIImage {
+        if index == 0 {
+            return UIImage()
+        }
         return UIImage(data: user.media[index])!
     }
     

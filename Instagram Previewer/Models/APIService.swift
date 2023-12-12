@@ -6,6 +6,8 @@
 //
 
 import Foundation
+import AVFoundation
+import AssetsLibrary
 
 final class APIService {
     
@@ -14,14 +16,14 @@ final class APIService {
     var content: Content!
     var photos: [Data]! {
         didSet {
-            if self.photos.count == self.content.data.count {
+            if self.photos.count + 1 == self.content.data.count {
                 NotificationCenter.default.post(Notification(name: Notification.Name.dataWasObtained))
             }
         }
     }
     
     func getContent() {
-        let url = URL(string: "https://graph.instagram.com//me/media?fields=media_url,timestamp&access_token=" + access_token)
+        let url = URL(string: "https://graph.instagram.com//me/media?fields=media_type,media_url,timestamp&access_token=" + access_token)
         let urlRequest = URLRequest(url: url!)
         let task = URLSession.shared.dataTask(with: urlRequest) { data,response,error in
             guard let data = data, error == nil,
@@ -33,24 +35,19 @@ final class APIService {
             DispatchQueue.main.async {
                 guard let content = try? JSONDecoder().decode(Content.self, from: data) else { return }
                 self.content = content
-                self.photos = []
-                for media in self.content.data {
-                    self.getPhoto(media.media_url)
-                }
+                self.getPhotos()
             }
         }
         task.resume()
     }
     
-    func getPhoto(_ url: String) {
-        let urlRequest = URLRequest(url: URL(string: url)!)
-        let task = URLSession.shared.dataTask(with: urlRequest) { data,_,error in
-            guard let data = data, error == nil else { return }
+    func getPhotos() {
+        photos = []
+        for media in content.data {
             DispatchQueue.main.async {
-                self.photos!.append(data)
+                try? self.photos!.append(Data(contentsOf: URL(string: media.media_url)!))
             }
         }
-        task.resume()
     }
     
     func getUserInfo() {
