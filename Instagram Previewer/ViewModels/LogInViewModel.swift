@@ -14,6 +14,7 @@ final class LogInViewModel {
     private var apiService: APIService!
     private var tokenObserver: NSObjectProtocol!
     private var dataObserver: NSObjectProtocol!
+    private var contentObserver: NSObjectProtocol!
     
     init() {
         model = LogInModel()
@@ -38,7 +39,11 @@ final class LogInViewModel {
                 print("Keychain error: ", error)
             }
         })
-        
+        contentObserver = NotificationCenter.default.addObserver(forName: Notification.Name.contentWasObtained, object: nil, queue: OperationQueue.main, using: { _ in
+            for media in self.apiService.content.data {
+                self.apiService.getPhoto(media.media_url)
+            }
+        })
         dataObserver = NotificationCenter.default.addObserver(forName: Notification.Name.dataWasObtained, object: nil, queue: OperationQueue.main, using: { _ in
             Saver.saveData(User(id: self.apiService.userInfo.id,
                                   username: self.apiService.userInfo.username,
@@ -51,6 +56,7 @@ final class LogInViewModel {
     
     func removeObservers() {
         NotificationCenter.default.removeObserver(tokenObserver!, name: Notification.Name.accessTokenWasObtained, object: nil)
+        NotificationCenter.default.removeObserver(dataObserver!, name: Notification.Name.contentWasObtained, object: nil)
         NotificationCenter.default.removeObserver(dataObserver!, name: Notification.Name.dataWasObtained, object: nil)
     }
 }

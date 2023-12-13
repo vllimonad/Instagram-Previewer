@@ -9,6 +9,14 @@ import Foundation
 import AVFoundation
 import AssetsLibrary
 
+extension Notification.Name {
+    static let accessTokenWasObtained = Notification.Name("accessTokenWasObtained")
+    static let contentWasObtained = Notification.Name("contentWasObtained")
+    static let dataWasObtained = Notification.Name("dataWasObtained")
+    static let tokenWasRefreshed = Notification.Name("tokenWasRefreshed")
+    static let tokenExpired = Notification.Name("tokenExpired")
+}
+
 final class APIService {
     
     var userInfo: Info!
@@ -35,19 +43,23 @@ final class APIService {
             DispatchQueue.main.async {
                 guard let content = try? JSONDecoder().decode(Content.self, from: data) else { return }
                 self.content = content
-                self.getPhotos()
+                self.photos = []
+                NotificationCenter.default.post(Notification(name: Notification.Name.contentWasObtained))
             }
         }
         task.resume()
     }
     
-    func getPhotos() {
-        photos = []
-        for media in content.data {
+    func getPhoto(_ url: String) {
+        print(url)
+        let urlRequest = URLRequest(url: URL(string: url)!)
+        let task = URLSession.shared.dataTask(with: urlRequest) { data,response,error in
+            guard let data = data else { return }
             DispatchQueue.main.async {
-                try? self.photos!.append(Data(contentsOf: URL(string: media.media_url)!))
+                self.photos!.append(data)
             }
         }
+        task.resume()
     }
     
     func getUserInfo() {

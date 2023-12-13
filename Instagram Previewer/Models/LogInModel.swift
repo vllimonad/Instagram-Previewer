@@ -43,11 +43,3 @@ final class LogInModel{
         task.resume()
     }
 }
-
-
-extension Notification.Name {
-    static let accessTokenWasObtained = Notification.Name("accessTokenWasObtained")
-    static let dataWasObtained = Notification.Name("dataWasObtained")
-    static let tokenWasRefreshed = Notification.Name("tokenWasRefreshed")
-    static let tokenExpired = Notification.Name("tokenExpired")
-}
