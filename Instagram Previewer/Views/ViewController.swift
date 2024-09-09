@@ -105,7 +105,7 @@ extension ViewController: UICollectionViewDelegate, UICollectionViewDataSource, 
         layout.itemSize = CGSize(width: view.frame.width/3, height: view.frame.width/3)
         collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.register(PhotoViewCell.self, forCellWithReuseIdentifier: PhotoViewCell.id)
-        collectionView.register(IconsHeaderView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: IconsHeaderView.id)
+        collectionView.backgroundColor = UIColor(named: "background")
         collectionView.frame = view.bounds
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         collectionView.delegate = self
@@ -129,16 +129,6 @@ extension ViewController: UICollectionViewDelegate, UICollectionViewDataSource, 
         cell.imageView.image = viewModel.getItemAt(indexPath.item)
         cell.layer.borderWidth = 1
         return cell
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
-        let iconsHeader = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: IconsHeaderView.id, for: indexPath) as! IconsHeaderView
-        iconsHeader.configure()
-        return iconsHeader
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
-        return CGSize(width: view.frame.width, height: view.frame.height/16)
     }
     
     func collectionView(_ collectionView: UICollectionView, contextMenuConfigurationForItemsAt indexPaths: [IndexPath], point: CGPoint) -> UIContextMenuConfiguration? {

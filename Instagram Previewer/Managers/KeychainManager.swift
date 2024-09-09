@@ -8,13 +8,17 @@
 import Foundation
 
 enum KeychainError: Error {
-    case duplicateToken
+    case duplicatedToken
     case unknown(OSStatus)
 }
 
 final class KeychainManager {
     
-    static func saveToken(token: Data, account: String) throws {
+    static let shared = KeychainManager()
+    
+    private init() {}
+    
+    func saveToken(token: Data, account: String) throws {
         let query: [CFString: Any] = [
             kSecClass: kSecClassGenericPassword,
             kSecAttrAccount: account,
@@ -22,14 +26,14 @@ final class KeychainManager {
         ]
         let status = SecItemAdd(query as CFDictionary, nil)
         guard status != errSecDuplicateItem else {
-            throw KeychainError.duplicateToken
+            throw KeychainError.duplicatedToken
         }
         guard status == errSecSuccess else {
             throw KeychainError.unknown(status)
         }
     }
     
-    static func getToken(account: String) throws -> Data? {
+    func getToken(account: String) throws -> Data? {
         let query: [CFString : Any] = [
             kSecClass: kSecClassGenericPassword,
             kSecAttrAccount: account,

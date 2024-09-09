@@ -10,14 +10,14 @@ import Foundation
 final class LogInViewModel {
     
     var delegate: LogInViewModelDelegate!
-    private var model: LogInModel!
+    private var model: LogInManager!
     private var apiService: APIService!
     private var tokenObserver: NSObjectProtocol!
     private var dataObserver: NSObjectProtocol!
     private var contentObserver: NSObjectProtocol!
     
     init() {
-        model = LogInModel()
+        model = LogInManager()
         apiService = APIService()
     }
     
