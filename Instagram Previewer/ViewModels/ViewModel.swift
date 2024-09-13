@@ -12,13 +12,8 @@ import AssetsLibrary
 
 final class ViewModel {
     
-    private var apiService: APIService!
     private var user: User!
     var delegate: ViewModelDelegate!
-    
-    init() {
-        apiService = APIService()
-    }
     
     func getDataFromFile() {
         user = DataManager.shared.readData()
@@ -29,41 +24,48 @@ final class ViewModel {
     func getDataFromServer() {
         do {
             let tokenData = try KeychainManager.shared.getToken(account: "app")
-            apiService.access_token = String(data: tokenData!, encoding: .utf8)!
-            apiService.getUserInfo()
-            apiService.getContent()
-        } catch { print(error) }
-        NotificationCenter.default.addObserver(forName: Notification.Name.contentWasObtained, object: nil, queue: OperationQueue.main, using: { _ in
-            for media in self.apiService.content.data {
-                if media.media_type == "IMAGE"{
-                    self.apiService.getPhoto(media.media_url)
-                } else {
-                    let asset = AVAsset(url: URL(string: media.media_url)!)
-                    let assetImgGenerate = AVAssetImageGenerator(asset: asset)
-                    let time = CMTimeMakeWithSeconds(0.1, preferredTimescale: 600)
-                    if let img = try? assetImgGenerate.copyCGImage(at: time, actualTime: nil) {
-                         UIImage(cgImage: img).jpegData(compressionQuality: 0.8)
+            let token = String(data: tokenData!, encoding: .utf8)!
+            APIService.shared.getUserInfo(with: token) { result in
+                switch result {
+                case .success(let userInfo):
+                    self.user.username = userInfo.username
+                    APIService.shared.getContent(with: token) { result in
+                        switch result {
+                        case .success(let content):
+                            self.getPhotos(from: content)
+                        case .failure(let error):
+                            print(error)
+                        }
                     }
+                case .failure(let error):
+                    print(error)
                 }
             }
-        })
-        NotificationCenter.default.addObserver(forName: Notification.Name.dataWasObtained, object: nil, queue: OperationQueue.main, using: { _ in
-            self.user.media = self.apiService.photos!
-            self.user.username = self.apiService.userInfo.username
-            self.delegate.setUsername(self.user.username)
-            self.delegate.reloadCollectionView()
-            DataManager.shared.saveData(self.user)
-        })
-        NotificationCenter.default.addObserver(forName: Notification.Name.tokenExpired, object: nil, queue: OperationQueue.main, using: { _ in
-            self.apiService.refreshToken()
-        })
-        NotificationCenter.default.addObserver(forName: Notification.Name.tokenWasRefreshed, object: nil, queue: OperationQueue.main, using: { _ in
-            do {
-                try KeychainManager.shared.saveToken(token: self.apiService.access_token.data(using: .utf8)!, account: "app")
-                self.apiService.getUserInfo()
-                self.apiService.getContent()
-            } catch { print("Keychain error: ", error) }
-        })
+        } catch {
+            print(error)
+        }
+    }
+    
+    func getPhotos(from content: Content) {
+        var photos: [Data] = []
+        for media in content.data {
+            APIService.shared.getPhoto(media.media_url) { result in
+                switch result {
+                case .success(let data):
+                    photos.append(data)
+                    if photos.count == content.data.count - 1 {
+                        DispatchQueue.main.sync {
+                            self.user.media = photos
+                            self.delegate.setUsername(self.user.username)
+                            self.delegate.reloadCollectionView()
+                            DataManager.shared.saveData(self.user)
+                        }
+                    }
+                case .failure(let error):
+                    print(error)
+                }
+            }
+        }
     }
     
     func logout() {

@@ -10,54 +10,92 @@ import Foundation
 final class LogInViewModel {
     
     var delegate: LogInViewModelDelegate!
-    private var model: LogInManager!
-    private var apiService: APIService!
-    private var tokenObserver: NSObjectProtocol!
-    private var dataObserver: NSObjectProtocol!
-    private var contentObserver: NSObjectProtocol!
-    
-    init() {
-        model = LogInManager()
-        apiService = APIService()
+    var longLivedAccessToken: LongLivedToken! {
+        didSet {
+            saveToken()
+            getData()
+        }
+    }
+    var user: User!
+    var content: Content! {
+        didSet {
+            getPhotos()
+        }
     }
     
-    func getCodeFrom(_ url: String){
+    func getCodeFrom(_ url: String) -> String {
         let from = url.index(url.startIndex, offsetBy: "https://socialsizzle.herokuapp.com/auth/?code=".count)
         let to = url.lastIndex(of: "#")!
         let code = String(url[from..<to])
-        getData(code)
+        return code
     }
     
-    func getData(_ code: String){
-        tokenObserver = NotificationCenter.default.addObserver(forName: Notification.Name.accessTokenWasObtained, object: nil, queue: OperationQueue.main, using: { _ in
-            self.apiService.access_token = self.model.longLivedToken.access_token
-            self.apiService.getUserInfo()
-            self.apiService.getContent()
-            do {
-                try KeychainManager.saveToken(token: self.model.longLivedToken.access_token.data(using: .utf8)!, account: "app")
-            } catch {
-                print("Keychain error: ", error)
+    func getToken(_ code: String) {
+        AccessTokenManager.shared.getAccessToken(for: code) { result in
+            switch result {
+            case .success(let token):
+                AccessTokenManager.shared.getLongLivedAccessToken(for: token) { result in
+                    switch result {
+                    case .success(let longLivedToken):
+                        self.longLivedAccessToken = longLivedToken
+                    case .failure(let error):
+                        print(error)
+                    }
+                }
+            case .failure(let error):
+                print(error)
             }
-        })
-        contentObserver = NotificationCenter.default.addObserver(forName: Notification.Name.contentWasObtained, object: nil, queue: OperationQueue.main, using: { _ in
-            for media in self.apiService.content.data {
-                self.apiService.getPhoto(media.media_url)
-            }
-        })
-        dataObserver = NotificationCenter.default.addObserver(forName: Notification.Name.dataWasObtained, object: nil, queue: OperationQueue.main, using: { _ in
-            Saver.saveData(User(id: self.apiService.userInfo.id,
-                                  username: self.apiService.userInfo.username,
-                                  media: self.apiService.photos!))
-            self.removeObservers()
-            self.delegate.dismissViewController()
-        })
-        model.getAccessToken(for: code)
+        }
     }
     
-    func removeObservers() {
-        NotificationCenter.default.removeObserver(tokenObserver!, name: Notification.Name.accessTokenWasObtained, object: nil)
-        NotificationCenter.default.removeObserver(dataObserver!, name: Notification.Name.contentWasObtained, object: nil)
-        NotificationCenter.default.removeObserver(dataObserver!, name: Notification.Name.dataWasObtained, object: nil)
+    func getData() {
+        APIService.shared.getUserInfo(with: self.longLivedAccessToken.access_token) { result in
+            switch result {
+            case .success(let userInfo):
+                APIService.shared.getContent(with: self.longLivedAccessToken.access_token) { result in
+                    switch result {
+                    case .success(let content):
+                        self.content = content
+                        self.user = User(id: userInfo.id,
+                                    username: userInfo.username,
+                                    media: [])
+                    case .failure(let error):
+                        print(error)
+                    }
+                }
+            case .failure(let error):
+                print(error)
+            }
+        }
+    }
+    
+    func getPhotos() {
+        var photos: [Data] = []
+        for media in content.data {
+            APIService.shared.getPhoto(media.media_url) { result2 in
+                switch result2 {
+                case .success(let data):
+                    photos.append(data)
+                    if photos.count == self.content.data.count - 1 {
+                        self.user.media = photos
+                        DataManager.shared.saveData(self.user)
+                        DispatchQueue.main.sync {
+                            self.delegate.dismissViewController()
+                        }
+                    }
+                case .failure(let error2):
+                    print(error2)
+                }
+            }
+        }
+    }
+    
+    func saveToken() {
+        do {
+            try KeychainManager.shared.saveToken(token: self.longLivedAccessToken.access_token.data(using: .utf8)!, account: "app")
+        } catch {
+            print("Keychain error: ", error)
+        }
     }
 }
 

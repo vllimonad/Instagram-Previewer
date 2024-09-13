@@ -10,7 +10,7 @@
 		2B32B0622AE3D7220093BDBD /* ViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B32B0612AE3D7220093BDBD /* ViewModel.swift */; };
 		2B32B0652AE472D30093BDBD /* APIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B32B0642AE472D30093BDBD /* APIService.swift */; };
 		2B3D6AD72AE6AB9C00F0AF28 /* LogInViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B3D6AD62AE6AB9C00F0AF28 /* LogInViewModel.swift */; };
-		2B3D6AD92AE6B1A800F0AF28 /* LogInManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B3D6AD82AE6B1A800F0AF28 /* LogInManager.swift */; };
+		2B3D6AD92AE6B1A800F0AF28 /* AccessTokenManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B3D6AD82AE6B1A800F0AF28 /* AccessTokenManager.swift */; };
 		2B51A6242AF044C300F98D00 /* KeychainManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B51A6232AF044C300F98D00 /* KeychainManager.swift */; };
 		2B6A16C52C8F28AD00464C03 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B6A16C42C8F28AD00464C03 /* User.swift */; };
 		2B6A16C72C8F28C400464C03 /* Info.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B6A16C62C8F28C400464C03 /* Info.swift */; };
@@ -34,7 +34,7 @@
 		2B32B0612AE3D7220093BDBD /* ViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewModel.swift; sourceTree = "<group>"; };
 		2B32B0642AE472D30093BDBD /* APIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIService.swift; sourceTree = "<group>"; };
 		2B3D6AD62AE6AB9C00F0AF28 /* LogInViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogInViewModel.swift; sourceTree = "<group>"; };
-		2B3D6AD82AE6B1A800F0AF28 /* LogInManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogInManager.swift; sourceTree = "<group>"; };
+		2B3D6AD82AE6B1A800F0AF28 /* AccessTokenManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccessTokenManager.swift; sourceTree = "<group>"; };
 		2B51A6232AF044C300F98D00 /* KeychainManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainManager.swift; sourceTree = "<group>"; };
 		2B6A16C42C8F28AD00464C03 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		2B6A16C62C8F28C400464C03 /* Info.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Info.swift; sourceTree = "<group>"; };
@@ -91,11 +91,11 @@
 			isa = PBXGroup;
 			children = (
 				2B6A16C42C8F28AD00464C03 /* User.swift */,
-				2B6A16C62C8F28C400464C03 /* Info.swift */,
-				2B6A16C82C8F28D600464C03 /* Media.swift */,
 				2B6A16CA2C8F28E600464C03 /* Profile.swift */,
 				2B6A16CC2C8F28FB00464C03 /* LongLivedToken.swift */,
+				2B6A16C62C8F28C400464C03 /* Info.swift */,
 				2B6A16CE2C8F295000464C03 /* Content.swift */,
+				2B6A16C82C8F28D600464C03 /* Media.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -105,7 +105,7 @@
 			children = (
 				2B32B0642AE472D30093BDBD /* APIService.swift */,
 				2B51A6232AF044C300F98D00 /* KeychainManager.swift */,
-				2B3D6AD82AE6B1A800F0AF28 /* LogInManager.swift */,
+				2B3D6AD82AE6B1A800F0AF28 /* AccessTokenManager.swift */,
 				2B6A16D02C8F2AF300464C03 /* DataManager.swift */,
 			);
 			path = Managers;
@@ -217,7 +217,7 @@
 			files = (
 				2B6A16CB2C8F28E600464C03 /* Profile.swift in Sources */,
 				2BD445422ADDAD350019ADEC /* ViewController.swift in Sources */,
-				2B3D6AD92AE6B1A800F0AF28 /* LogInManager.swift in Sources */,
+				2B3D6AD92AE6B1A800F0AF28 /* AccessTokenManager.swift in Sources */,
 				2BD4453E2ADDAD350019ADEC /* AppDelegate.swift in Sources */,
 				2B6A16C72C8F28C400464C03 /* Info.swift in Sources */,
 				2B6A16CF2C8F295000464C03 /* Content.swift in Sources */,

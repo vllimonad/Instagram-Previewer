@@ -28,6 +28,7 @@ final class StartViewController: UIViewController {
     }
     
     @objc func login() {
+        print(DataManager.shared.getURL().path())
         if FileManager().fileExists(atPath: DataManager.shared.getURL().path()){
             let viewController = ViewController()
             navigationController!.pushViewController(viewController, animated: true)
@@ -41,3 +42,8 @@ final class StartViewController: UIViewController {
         }
     }
 }
+
+
+/*
+ /Users/uladzislau/Library/Developer/CoreSimulator/Devices/054F5857-E256-4099-B2DD-6CBB2B24A159/data/Containers/Data/Application/45C704E6-F68D-4B91-AB13-114146A5F72C/Documents/PhotosData.txt
+ */

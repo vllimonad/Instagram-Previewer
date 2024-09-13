@@ -9,14 +9,4 @@ import Foundation
 
 struct Content: Codable {
     var data: [Media]
-    var paging: Paging
-    
-    struct Paging: Codable {
-        let cursors: Cursors
-        
-        struct Cursors: Codable {
-            let before: String
-            let after: String
-        }
-    }
 }
